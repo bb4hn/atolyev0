@@ -713,6 +713,7 @@ input,select,textarea{width:100%;border:1px solid var(--line);background:var(--p
 
 <div id="toast" class="toast"></div>
 
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
 (() => {
   const BRAND_PRESETS = ["MICHELIN", "GOODYEAR", "PIRELLI", "CONTINENTAL", "BRIDGESTONE", "LASSA", "PETLAS", "HANKOOK", "KUMHO", "NEXEN", "FALKEN", "YOKOHAMA", "TOYO", "BFGOODRICH", "GENERAL TIRE", "DUNLOP", "FULDA", "SEMPERIT", "DEBICA", "MATADOR", "MAXXIS", "VIKING", "SAVA", "GISLAVED", "UNIROYAL", "KORMORAN", "KLEBER", "BARUM", "DAYTON", "FIRESTONE", "COOPER", "MARSHAL", "MILESTONE", "RAPID", "STARMAXX", "SAILUN", "ROADSTONE", "PRELLI", "LİNGLONG", "LINGLONG", "TRIANGLE", "POWERTRAC", "HIFLY", "LEAO", "MAYRUN", "MIRAGE", "WESTLAKE", "MOMO", "NOKIAN", "VREDESTEIN"];
@@ -1728,8 +1729,14 @@ function exportBackup(){
   let stockCameraStream = null;
   let stockCameraTimer = null;
   let stockBarcodeDetector = null;
+  let html5QrCode = null;
+  let isScanning = false;
 
   function normalizeBarcode(v){ return String(v||'').trim(); }
+
+  function hasBarcodeSupport(){
+    return ('BarcodeDetector' in window) || (typeof Html5Qrcode !== 'undefined');
+  }
 
   function currentStockBarcodePayload(){
     return {
@@ -1809,63 +1816,139 @@ function exportBackup(){
   }
 
   async function startStockCameraScan(){
+    if(isScanning) return;
     try{
-      if(stockCameraStream) stopStockCameraScan(false);
+      stopStockCameraScan(false);
+
+      // Try native BarcodeDetector first
       const detector = await ensureStockBarcodeDetector();
-      if(!detector){
+
+      if(detector){
+        await startNativeBarcodeScan(detector);
+      } else if(typeof Html5Qrcode !== 'undefined'){
+        await startHtml5QrcodeScan();
+      } else {
         toast('Bu tarayıcıda barkod kamera desteği yok');
         setStockCameraStatus('Destek yok');
-        return;
       }
-      const video = qs('#stockCameraVideo');
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal:'environment' }, width:{ideal:1280}, height:{ideal:720} },
-        audio: false
-      });
-      stockCameraStream = stream;
-      video.srcObject = stream;
-      await video.play();
-      qs('#stockCameraWrap').classList.remove('hidden');
-      qs('#startStockCameraBtn').classList.add('hidden');
-      qs('#stopStockCameraBtn').classList.remove('hidden');
-      setStockCameraStatus('Kamera açık • barkod aranıyor');
-      stockCameraTimer = setInterval(async ()=>{
-        try{
-          if(video.readyState < 2) return;
-          const codes = await detector.detect(video);
-          if(codes && codes.length){
-            const raw = String(codes[0].rawValue || '').trim();
-            if(raw){
-              qs('#stockScanBarcode').value = raw;
-              renderStockBarcodeInfo();
-              loadBarcodeIntoStock();
-              stopStockCameraScan(false);
-              toast('Barkod okundu');
-            }
-          }
-        }catch(e){}
-      }, 500);
     }catch(err){
+      console.error('Barcode scan error:', err);
       setStockCameraStatus('Kamera açılamadı');
-      toast('Kamera izni veya erişimi başarısız');
+      toast('Kamera izni veya erişimi başarısız: ' + (err?.message || 'Bilinmeyen hata'));
     }
   }
 
+  async function startNativeBarcodeScan(detector){
+    const video = qs('#stockCameraVideo');
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal:'environment' }, width:{ideal:1280}, height:{ideal:720} },
+      audio: false
+    });
+    stockCameraStream = stream;
+    video.srcObject = stream;
+    await video.play();
+    isScanning = true;
+
+    qs('#stockCameraWrap').classList.remove('hidden');
+    qs('#startStockCameraBtn').classList.add('hidden');
+    qs('#stopStockCameraBtn').classList.remove('hidden');
+    setStockCameraStatus('Kamera açık • barkod aranıyor');
+
+    stockCameraTimer = setInterval(async ()=>{
+      if(!isScanning) return;
+      try{
+        if(video.readyState < 2) return;
+        const codes = await detector.detect(video);
+        if(codes && codes.length){
+          const raw = String(codes[0].rawValue || '').trim();
+          if(raw){
+            handleBarcodeDetected(raw);
+          }
+        }
+      }catch(e){}
+    }, 500);
+  }
+
+  async function startHtml5QrcodeScan(){
+    const wrap = qs('#stockCameraWrap');
+    wrap.classList.remove('hidden');
+    qs('#startStockCameraBtn').classList.add('hidden');
+    qs('#stopStockCameraBtn').classList.remove('hidden');
+    setStockCameraStatus('Kamera başlatılıyor...');
+
+    html5QrCode = new Html5Qrcode('stockCameraWrap');
+    isScanning = true;
+
+    const config = {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+      aspectRatio: 1.0
+    };
+
+    const cameras = await Html5Qrcode.getCameras();
+    if(cameras && cameras.length){
+      // Prefer back camera on mobile
+      const backCamera = cameras.find(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('arka'));
+      const cameraId = backCamera ? backCamera.id : cameras[0].id;
+
+      await html5QrCode.start(
+        cameraId,
+        config,
+        (decodedText) => {
+          if(decodedText){
+            handleBarcodeDetected(decodedText);
+          }
+        },
+        (errorMessage) => {
+          // Scan errors are normal when no barcode in view - ignore
+        }
+      );
+
+      setStockCameraStatus('Kamera açık • barkod aranıyor');
+    } else {
+      throw new Error('Kamera bulunamadı');
+    }
+  }
+
+  function handleBarcodeDetected(rawValue){
+    qs('#stockScanBarcode').value = rawValue;
+    renderStockBarcodeInfo();
+    loadBarcodeIntoStock();
+    stopStockCameraScan(false);
+    toast('Barkod okundu: ' + rawValue);
+  }
+
   function stopStockCameraScan(showToast=true){
+    isScanning = false;
+
     if(stockCameraTimer){
       clearInterval(stockCameraTimer);
       stockCameraTimer = null;
     }
+
     if(stockCameraStream){
       stockCameraStream.getTracks().forEach(t=>t.stop());
       stockCameraStream = null;
     }
+
+    if(html5QrCode){
+      try{
+        html5QrCode.stop().catch(()=>{});
+      }catch(e){}
+      try{
+        html5QrCode.clear();
+      }catch(e){}
+      html5QrCode = null;
+    }
+
     const video = qs('#stockCameraVideo');
     if(video) video.srcObject = null;
+
     qs('#stockCameraWrap').classList.add('hidden');
     qs('#startStockCameraBtn').classList.remove('hidden');
     qs('#stopStockCameraBtn').classList.add('hidden');
     setStockCameraStatus('Kamera kapalı');
+
     if(showToast) toast('Kamera kapatıldı');
   }
 
@@ -2511,7 +2594,7 @@ function exportBackup(){
     qs('#clearSaleFormBtn').onclick = clearIncomeEdit;
     qs('#salesSearch').oninput = renderSalesHistory;
     if(qs('#exportBackupBtn')) qs('#exportBackupBtn').onclick = exportBackup;
-    if(qs('#importBackupBtn')) qs('#importBackupBtn').onclick = openBackupFilePicker();
+    if(qs('#importBackupBtn')) qs('#importBackupBtn').onclick = openBackupFilePicker;
     if(qs('#backupFileInput')) qs('#backupFileInput').onchange = async (e)=>{
       const file = e.target.files && e.target.files[0];
       await importBackupFromFile(file);
@@ -2519,7 +2602,6 @@ function exportBackup(){
     };
     qs('#runReportBtn').onclick = runReport;
     qs('#printReportBtn').onclick = printReport;
-    if(qs('#dayEndReportBtn')) qs('#dayEndReportBtn').onclick = runDayEndReport;
     if(qs('#dayEndReportBtn')) qs('#dayEndReportBtn').onclick = runDayEndReport;
 
     qs('#jobDate').value = today();
