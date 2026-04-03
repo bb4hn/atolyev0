@@ -1,0 +1,2824 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0f172a" />
+<title>Lastik Market - Temiz Başlangıç</title>
+<style>
+:root{
+  --bg:#0f172a; --panel:#111827; --panel2:#0b1220; --line:#334155;
+  --text:#f8fafc; --muted:#94a3b8; --green:#22c55e; --red:#ef4444; --violet:#8b5cf6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font-size:16px}
+button{touch-action:manipulation}
+.app{max-width:1200px;margin:0 auto;padding:14px 14px 90px}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(15,23,42,.96);backdrop-filter:blur(8px);padding-bottom:10px}
+.title{font-size:22px;font-weight:800;margin:0}
+.brandbar{display:flex;align-items:center;gap:12px}
+.logo-wrap{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(135deg,#1e293b,#0b1220);border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.logo-wrap svg{width:38px;height:38px;display:block}
+.brand-copy{min-width:0}
+.tap-safe{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit}
+video{background:#000}
+.subtitle{color:var(--muted);font-size:13px;margin-top:4px}
+.nav{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
+.nav button{border:none;border-radius:14px;padding:12px 8px;background:#1e293b;color:#fff;font-weight:700}
+.nav button.active{background:var(--violet)}
+.screen{display:none}
+.screen.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:14px}
+.grid2{display:grid;grid-template-columns:340px 1fr;gap:14px}
+.row,.row2,.row3{display:grid;gap:10px}
+.row2{grid-template-columns:1fr 1fr}
+.row3{grid-template-columns:1fr 1fr 1fr}
+label{display:block;font-size:13px;color:#cbd5e1;margin:8px 0 6px}
+input,select,textarea{width:100%;border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:12px;padding:12px;font-size:15px}
+.btns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.btn{border:none;border-radius:12px;padding:12px 10px;font-weight:800;color:#fff;cursor:pointer}
+.btn.green{background:var(--green);color:#052e16}
+.btn.red{background:var(--red)}
+.btn.violet{background:var(--violet)}
+.btn.gray{background:#475569}
+.badge{display:inline-block;padding:8px 10px;border-radius:999px;background:#1e293b;border:1px solid var(--line);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi .t{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:20px;font-weight:900;margin-top:6px}
+.list{display:grid;gap:10px}
+.item{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px}
+.item .title{font-size:16px}
+.item .meta{font-size:12px;color:var(--muted);margin-top:4px}
+.item .money{font-size:18px;font-weight:900;margin-top:8px}
+.item .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.hr{height:1px;background:var(--line);margin:14px 0}
+.hidden{display:none !important}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#020617;color:#fff;border:1px solid var(--line);padding:12px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s}
+.toast.show{opacity:1}
+
+.modal{position:fixed;inset:0;background:rgba(2,6,23,.78);display:none;align-items:center;justify-content:center;padding:14px;z-index:50}
+.modal.show{display:flex}
+.modal-card{width:min(1100px,100%);max-height:90vh;overflow:auto;background:#0f172a;border:1px solid var(--line);border-radius:18px;padding:14px;margin:0}
+.preview-toolbar{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:10px 0 14px}
+.preview-body{display:grid;gap:14px;margin:0;padding:0}
+.svg-sheet{display:block;width:100%;aspect-ratio:297 / 210;background:#fff;border-radius:12px;border:1px solid #cbd5e1}
+@page{
+  size:A4 landscape;
+  margin:0;
+}
+@media print{
+  html,body{
+    width:297mm !important;
+    height:210mm !important;
+    background:#fff !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+  body *{
+    visibility:hidden !important;
+  }
+  #labelModal,
+  #labelModal #labelPreviewBody,
+  #labelModal #labelPreviewBody .svg-sheet{
+    visibility:visible !important;
+  }
+  #labelModal{
+    position:fixed !important;
+    inset:0 !important;
+    display:block !important;
+    background:#fff !important;
+    padding:0 !important;
+    margin:0 !important;
+  }
+  .modal-card{
+    width:297mm !important;
+    height:210mm !important;
+    max-height:none !important;
+    overflow:visible !important;
+    border:none !important;
+    border-radius:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    background:#fff !important;
+    box-shadow:none !important;
+  }
+  .modal-card > .title,
+  .modal-card > .small,
+  .preview-toolbar{
+    display:none !important;
+  }
+  #labelPreviewBody{
+    display:block !important;
+    gap:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+  body{
+    zoom:1 !important;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  svg{
+    width:297mm !important;
+    height:210mm !important;
+    max-width:none !important;
+  }
+  .svg-sheet{
+    display:block !important;
+    width:297mm !important;
+    height:210mm !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:none !important;
+    border-radius:0 !important;
+    break-after:page;
+    page-break-after:always;
+  }
+  .svg-sheet:last-child{
+    break-after:auto !important;
+    page-break-after:auto !important;
+  }
+}
+@media print{
+  body.report-print *{
+    visibility:hidden !important;
+  }
+  body.report-print #reports,
+  body.report-print #reports *{
+    visibility:visible !important;
+  }
+  body.report-print .topbar,
+  body.report-print #reports .btn,
+  body.report-print #reports input,
+  body.report-print #reports label{
+    display:none !important;
+  }
+  body.report-print #reports{
+    display:block !important;
+    position:absolute !important;
+    left:0 !important;
+    top:0 !important;
+    width:100% !important;
+    padding:0 !important;
+    margin:0 !important;
+    background:#fff !important;
+    color:#000 !important;
+  }
+  body.report-print #reports .card,
+  body.report-print #reports .kpi{
+    background:#fff !important;
+    color:#000 !important;
+    border:1px solid #cbd5e1 !important;
+    box-shadow:none !important;
+  }
+  body.report-print #reports .small,
+  body.report-print #reports .meta,
+  body.report-print #reports .subtitle,
+  body.report-print #reports .t{
+    color:#334155 !important;
+  }
+  body.report-print #reports .money,
+  body.report-print #reports .title,
+  body.report-print #reports .v{
+    color:#000 !important;
+  }
+}
+
+.small{font-size:12px;color:var(--muted)}
+@media (max-width:900px){
+  .nav{grid-template-columns:repeat(3,1fr)}
+  .grid2,.row2,.row3,.kpis,.btns{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="card" style="margin-top:0">
+      <div class="brandbar">
+        <div class="logo-wrap" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="26" stroke="#e2e8f0" stroke-width="6"/>
+            <circle cx="32" cy="32" r="10" stroke="#94a3b8" stroke-width="5"/>
+            <path d="M32 7v10M32 47v10M7 32h10M47 32h10M15.6 15.6l7.2 7.2M41.2 41.2l7.2 7.2M48.4 15.6l-7.2 7.2M22.8 41.2l-7.2 7.2" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="brand-copy">
+          <div class="title">Lastik Market</div>
+          <div class="subtitle">WebView APK uyumlu sürüm • Offline tek kullanıcı • Stabil çekirdek + Veresiye modülü</div>
+        </div>
+      </div>
+      <div class="nav" id="nav"></div>
+    </div>
+  </div>
+
+  <section id="home" class="screen active">
+    <div class="card">
+      <div class="title">Ana Ekran</div>
+      <div class="subtitle">Bu temiz başlangıçta ana iskelet ve veresiye modülü çalışır durumda kuruldu.</div>
+      <div class="btns" style="margin-top:12px;grid-template-columns:1fr 1fr">
+        <button class="btn gray" id="exportBackupBtn" type="button">Yedek Al</button>
+        <button class="btn violet" id="importBackupBtn" type="button">Yedekten Yükle</button>
+      </div>
+      <input id="backupFileInput" type="file" accept=".json,application/json" class="hidden">
+      <div class="small" id="autoBackupInfo" style="margin-top:10px">Otomatik yedek hazır değil</div>
+
+      <div class="kpis" style="margin-top:12px">
+        <div class="kpi"><div class="t">Toplam Firma</div><div class="v" id="homeFirmCount">0</div></div>
+        <div class="kpi"><div class="t">Toplam Veresiye</div><div class="v" id="homeReceivable">0 ₺</div></div>
+        <div class="kpi"><div class="t">Toplam İş</div><div class="v" id="homeIncomeCount">0</div></div>
+        <div class="kpi"><div class="t">Toplam Stok</div><div class="v" id="homeStockCount">0</div></div>
+        <div class="kpi"><div class="t">Toplam Gider</div><div class="v" id="homeExpenseCount">0 ₺</div></div>
+        <div class="kpi"><div class="t">Otel Kayıt</div><div class="v" id="homeHotelCount">0</div></div>
+        <div class="kpi"><div class="t">Net</div><div class="v" id="homeNetTotal">0 ₺</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sales" class="screen">
+    <div class="card">
+      <div class="title">Satış / Gelir</div>
+      <div class="subtitle">Stoktan DOT seçerek satış yapabilir veya genel hizmet satışı girebilirsin.</div>
+
+      <div class="row3" style="margin-top:10px">
+        <div><label>Tarih</label><input id="saleDate" type="date"></div>
+        <div><label>Müşteri</label><input id="saleCustomer" placeholder="Müşteri"></div>
+        <div><label>Plaka</label><input id="salePlate" placeholder="Plaka"></div>
+      </div>
+
+      <div class="row3">
+        <div>
+          <label>Ödeme Tipi</label>
+          <select id="salePaymentType">
+            <option value="NAKIT">NAKIT</option>
+            <option value="KREDI_KARTI">KREDİ KARTI</option>
+            <option value="IBAN">IBAN / HAVALE</option>
+            <option value="VERESIYE">VERESIYE</option>
+          </select>
+        </div>
+        <div>
+          <label>Firma</label>
+          <input id="saleFirmInput" placeholder="Veresiye ise firma">
+        </div>
+        <div style="display:flex;align-items:end">
+          <button class="btn green" id="addFirmFromSaleBtn" type="button">Firmayı Ekle</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="title" style="font-size:18px">Stoktan Lastik Satışı</div>
+
+      <div class="row3" style="margin-top:10px">
+        <div>
+          <label>Stok Kartı</label>
+          <select id="saleStockCard"></select>
+        </div>
+        <div>
+          <label>Satış Yapılacak DOT</label>
+          <select id="saleStockBatch"></select>
+        </div>
+        <div>
+          <label>Satış Adedi</label>
+          <input id="saleStockQty" type="number" inputmode="numeric" min="1" placeholder="1">
+        </div>
+      </div>
+
+      <div class="row3">
+        <div><label>Birim Satış</label><input id="saleStockUnitPrice" type="number" inputmode="decimal" placeholder="0"></div>
+        <div><label>Toplam</label><input id="saleStockTotal" readonly></div>
+        <div style="display:flex;align-items:end"><button class="btn violet" id="addStockSaleLineBtn" type="button">Kaleme Ekle</button></div>
+      </div>
+
+      <div class="small" id="saleStockInfo">Kart ve DOT seçince bilgi burada görünür.</div>
+
+      <div class="hr"></div>
+      <div class="title" style="font-size:18px">Genel Hizmet / Ürün Satışı</div>
+      <div class="row3" style="margin-top:10px">
+        <div><label>Açıklama</label>
+<div class="card" style="margin-bottom:10px">
+  <div class="title">Hizmet Yönetimi</div>
+  <div class="row3">
+    <input id="newServiceName" placeholder="Hizmet adı">
+    <input id="newServicePrice" type="number" placeholder="Varsayılan fiyat">
+    <button class="btn green" id="addServiceBtn">Ekle</button>
+  </div>
+</div>
+
+<select id="serviceSelect">
+
+        <option value="">Hizmet Seç</option>
+        <option>Rot Ayarı</option>
+        <option>Balans</option>
+        <option>Lastik Tamiri</option>
+        <option>Sibop</option>
+        <option>Diğer</option>
+      </select>
+      <input id="saleManualTitle" placeholder="Örn: Rot ayarı"></div>
+        <div><label>Miktar</label><input id="saleManualQty" type="number" inputmode="numeric" min="1" placeholder="1"></div>
+        <div><label>Birim Fiyat</label><input id="saleManualUnitPrice" type="number" inputmode="decimal" placeholder="0"></div>
+      </div>
+      <div class="row2">
+        <div><label>Toplam</label><input id="saleManualTotal" readonly></div>
+        <div style="display:flex;align-items:end"><button class="btn violet" id="addManualSaleLineBtn" type="button">Kaleme Ekle</button></div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="title" style="font-size:18px">Satış Sepeti</div>
+      <div id="saleCartList" class="list" style="margin-top:12px"></div>
+      <div class="kpis" style="margin-top:12px">
+        <div class="kpi"><div class="t">Sepet Toplamı</div><div class="v" id="saleCartTotal">0 ₺</div></div>
+        <div class="kpi"><div class="t">Tahmini Kar</div><div class="v" id="saleCartProfit">0 ₺</div></div>
+        <div class="kpi"><div class="t">Kalem Sayısı</div><div class="v" id="saleCartCount">0</div></div>
+      </div>
+
+      <div class="btns" style="margin-top:10px">
+        <button class="btn green" id="saveSaleBtn" type="button">Satışı Kaydet</button>
+        <button class="btn gray" id="clearSaleCartBtn" type="button">Sepeti Temizle</button>
+        <button class="btn gray" id="clearSaleFormBtn" type="button">Formu Temizle</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Gelir Geçmişi</div>
+      <div class="row2" style="margin-top:10px">
+        <div><label>Ara</label><input id="salesSearch" placeholder="Müşteri / plaka / başlık / firma ara"></div>
+        <div><label>Özet</label><div class="badge" id="salesSummaryBadge">0 kayıt</div></div>
+      </div>
+      <div id="salesHistoryList" class="list" style="margin-top:12px"></div>
+    </div>
+  </section>
+  <section id="expenses" class="screen">
+    <div class="card">
+      <div class="title">Gider</div>
+      <div class="subtitle">Yemek, personel ve diğer giderleri kaydedebilirsin.</div>
+
+      <div class="row3" style="margin-top:10px">
+        <div><label>Tarih</label><input id="expenseDate" type="date"></div>
+        <div>
+          <label>Gider Türü</label>
+          <select id="expenseType">
+            <option value="YEMEK">YEMEK</option>
+            <option value="PERSONEL">PERSONEL</option>
+            <option value="DIGER">DIGER</option>
+          </select>
+        </div>
+        <div><label>Tutar</label><input id="expenseAmount" type="number" inputmode="decimal" placeholder="0"></div>
+      </div>
+
+      <div><label>Açıklama</label><input id="expenseNote" placeholder="Açıklama"></div>
+
+      <div class="btns" style="margin-top:10px">
+        <button class="btn green" id="saveExpenseBtn" type="button">Gider Kaydet</button>
+        <button class="btn gray" id="clearExpenseBtn" type="button">Formu Temizle</button>
+        <button class="btn gray" id="cancelExpenseEditBtn" type="button">Düzeltmeyi İptal Et</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Gider Geçmişi</div>
+      <div class="row2" style="margin-top:10px">
+        <div><label>Ara</label><input id="expensesSearch" placeholder="Tür / açıklama ara"></div>
+        <div><label>Özet</label><div class="badge" id="expensesSummaryBadge">0 kayıt</div></div>
+      </div>
+      <div id="expensesHistoryList" class="list" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <section id="receivables" class="screen">
+    <div class="grid2">
+      <div class="card">
+        <div class="title">Firmalar</div>
+        <div class="row2" style="margin-top:10px">
+          <input id="firmSearch" placeholder="Firma ara...">
+          <button class="btn green" id="addFirmBtn" type="button">Firma Ekle</button>
+        </div>
+        <input id="firmName" placeholder="Yeni firma adı" style="margin-top:10px">
+        <div id="firmList" class="list" style="margin-top:12px"></div>
+      </div>
+
+      <div class="card" id="firmDetailCard">
+        <div class="title">Firma İşlem Sayfası</div>
+        <div class="row2" style="margin-top:10px">
+          <div>
+            <label>Firma Seç</label>
+            <input id="activeFirmInput" readonly>
+          </div>
+          <div style="display:flex;align-items:end">
+            <span class="badge" id="activeFirmLabel">Seçili firma: yok</span>
+          </div>
+        </div>
+
+        <div class="kpis" style="margin-top:12px">
+          <div class="kpi"><div class="t">Kalan Borç</div><div class="v" id="activeFirmBalance">0 ₺</div></div>
+          <div class="kpi"><div class="t">Toplam İşlem</div><div class="v" id="activeFirmCount">0</div></div>
+          <div class="kpi"><div class="t">İş Sayısı</div><div class="v" id="activeFirmJobs">0</div></div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="title" style="font-size:18px">Yeni Veresiye İş Kaydı</div>
+        <div class="row3" style="margin-top:10px">
+          <div><label>Tarih</label><input id="jobDate" type="date"></div>
+          <div><label>Müşteri</label><input id="jobCustomer"></div>
+          <div><label>Plaka</label><input id="jobPlate"></div>
+        </div>
+        <div class="row2">
+          <div><label>İş Başlığı</label><input id="jobTitle"></div>
+          <div><label>Tutar</label><input id="jobAmount" type="number" inputmode="decimal"></div>
+        </div>
+        <div class="row2">
+          <div><label>Tahsilat Ödeme Yöntemi</label>
+            <select id="collectionPaymentType">
+              <option value="NAKIT">NAKIT</option>
+              <option value="KREDI_KARTI">KREDİ KARTI</option>
+              <option value="IBAN_HAVALE">IBAN / HAVALE</option>
+            </select>
+          </div>
+          <div><label>Not</label><input id="jobNote"></div>
+        </div>
+        <div class="btns" style="margin-top:10px">
+          <button class="btn green" id="saveFirmJobBtn" type="button">İş Kaydet</button>
+          <button class="btn violet" id="saveCollectionBtn" type="button">Tahsilat Gir</button>
+          <button class="btn gray" id="clearFirmJobBtn" type="button">Formu Temizle</button>
+        </div>
+
+        <div class="hr"></div>
+        <div id="firmJobEditWrap" class="hidden">
+          <div class="title" style="font-size:18px">İş Düzenleme</div>
+          <div class="row3" style="margin-top:10px">
+            <div><label>Tarih</label><input id="firmJobEditDate" type="date"></div>
+            <div><label>Müşteri</label><input id="firmJobEditCustomer"></div>
+            <div><label>Plaka</label><input id="firmJobEditPlate"></div>
+          </div>
+          <div class="row2">
+            <div><label>İş Başlığı</label><input id="firmJobEditTitle"></div>
+            <div><label>Tutar</label><input id="firmJobEditAmount" type="number" inputmode="decimal"></div>
+          </div>
+          <div class="row2">
+            <div><label>Ödeme</label><input id="firmJobEditPayment" readonly></div>
+            <div><label>Firma</label><input id="firmJobEditFirm" readonly></div>
+          </div>
+          <div><label>Not</label><input id="firmJobEditNote"></div>
+          <div class="btns" style="margin-top:10px">
+            <button class="btn green" id="saveFirmJobEditBtn" type="button">İşi Güncelle</button>
+            <button class="btn red" id="deleteFirmJobEditBtn" type="button">İşi Sil</button>
+            <button class="btn gray" id="cancelFirmJobEditBtn" type="button">İptal</button>
+          </div>
+          <div class="hr"></div>
+        </div>
+
+        <div class="title" style="font-size:18px">Cari Hareketler</div>
+        <div id="cariList" class="list" style="margin-top:12px"></div>
+
+        <div class="hr"></div>
+        <div class="title" style="font-size:18px">Firmanın Yaptırdığı İşler</div>
+        <div id="firmJobsList" class="list" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stock" class="screen">
+    <div class="card">
+      <div class="title">Yeni Lastik Stok</div>
+      <div class="subtitle">Hiyerarşik yapı: ana kart marka + ebat, alt kayıtlar DOT partileri.</div>
+
+      <div class="row3" style="margin-top:10px">
+        <div><label>Sezon</label><select id="stockSeason"><option value="YAZLIK">YAZLIK</option><option value="KIŞLIK">KIŞLIK</option></select></div>
+        <div><label>Marka</label><input id="stockBrand" list="brandOptions" placeholder="Marka"></div>
+        <div><label>Ebat</label><input id="stockSize" list="sizeOptions" placeholder="Ebat"></div>
+      </div>
+
+      <div class="row3">
+        <div><label>Desen / Model</label><input id="stockPattern" placeholder="Desen"></div>
+        <div><label>DOT</label><input id="stockDot" placeholder="2725"></div>
+        <div><label>Adet</label><input id="stockQty" type="number" inputmode="numeric" placeholder="0"></div>
+      </div>
+
+      <div class="row3">
+        <div><label>Alış Fiyatı</label><input id="stockBuyPrice" type="number" inputmode="decimal" placeholder="0"></div>
+        <div><label>Satış Fiyatı</label><input id="stockSalePrice" type="number" inputmode="decimal" placeholder="0"></div>
+        <div><label>Barkod</label><input id="stockBarcode" placeholder="Varsa barkod"></div>
+      </div>
+
+      <div class="card" style="margin-top:10px;background:#0b1220">
+        <div class="title" style="font-size:18px">Barkodlu Hızlı Giriş</div>
+        <div class="row3" style="margin-top:10px">
+          <div><label>Okutulan Barkod</label><input id="stockScanBarcode" placeholder="Barkod okut / yaz"></div>
+          <div><label>Kayıtlı Ürün</label><input id="stockScanInfo" readonly placeholder="Tanımlıysa burada görünür"></div>
+          <div style="display:flex;align-items:end"><button class="btn violet" id="loadBarcodeBtn" type="button">Barkodu Yükle</button></div>
+        </div>
+        <div class="row3" style="margin-top:10px">
+          <div><button class="btn green" id="startStockCameraBtn" type="button">Kamera ile Tara</button></div>
+          <div><button class="btn gray hidden" id="stopStockCameraBtn" type="button">Kamerayı Kapat</button></div>
+          <div class="small" id="stockCameraStatus" style="padding-top:12px">Kamera kapalı</div>
+        </div>
+        <div id="stockCameraWrap" class="hidden" style="margin-top:10px">
+          <video id="stockCameraVideo" playsinline autoplay muted style="width:100%;max-height:260px;border-radius:16px;background:#000;border:1px solid var(--line)"></video>
+          <div class="small" style="margin-top:8px">Barkodu kameraya yaklaştır. Okununca ürün bilgisi doldurulur.</div>
+        </div>
+      </div>
+
+      <div class="row3">
+        <div><label>Kat</label><input id="stockFloor" placeholder="Kat1"></div>
+        <div><label>Koridor</label><input id="stockCorridor" placeholder="A"></div>
+        <div><label>Not</label><input id="stockNote" placeholder="İsteğe bağlı"></div>
+      </div>
+
+      <div class="btns" style="margin-top:10px">
+        <button class="btn green" id="saveStockBtn" type="button">Stoğa Ekle</button>
+        <button class="btn gray" id="clearStockBtn" type="button">Formu Temizle</button>
+        <button class="btn violet" id="cancelStockEditBtn" type="button">Düzeltmeyi İptal Et</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row2">
+        <div>
+          <label>Stok Ara</label>
+          <input id="stockSearch" placeholder="Marka / ebat / sezon / desen ara">
+        </div>
+        <div>
+          <label>Özet</label>
+          <div class="badge" id="stockSummaryBadge">0 kart • 0 adet</div>
+        </div>
+      </div>
+      <div id="stockList" class="list" style="margin-top:12px"></div>
+    </div>
+  </section>
+  <section id="hotel" class="screen">
+    <div class="card">
+      <div class="title">Lastik Oteli</div>
+      <div class="subtitle">Kat bazlı otel numarası üretir, kayıt düzeltir ve listeler.</div>
+
+      <div class="row3" style="margin-top:10px">
+        <div><label>Müşteri</label><input id="hotelCustomer" placeholder="Müşteri"></div>
+        <div><label>Telefon</label><input id="hotelPhone" placeholder="Telefon"></div>
+        <div><label>Plaka</label><input id="hotelPlate" placeholder="Plaka"></div>
+      </div>
+
+      <div class="row3">
+        <div><label>Adet</label><input id="hotelQty" type="number" inputmode="numeric" min="1" placeholder="4"></div>
+        <div><label>Marka</label><input id="hotelBrand" list="brandOptions" placeholder="Marka"></div>
+        <div><label>Ebat</label><input id="hotelSize" list="sizeOptions" placeholder="Ebat"></div>
+      </div>
+
+      <div class="row3">
+        <div>
+          <label>Grup</label>
+          <select id="hotelGroup">
+            <option value="BINEK">BINEK</option>
+            <option value="HAFIF TICARI">HAFIF TICARI</option>
+            <option value="SUV 4x4">SUV 4x4</option>
+            <option value="AGIR VASITA">AGIR VASITA</option>
+          </select>
+        </div>
+        <div>
+          <label>Kat</label>
+          <select id="hotelFloor">
+            <option value="Kat1">Kat1</option>
+            <option value="Kat2">Kat2</option>
+          </select>
+        </div>
+        <div><label>Koridor</label><input id="hotelCorridor" placeholder="A"></div>
+      </div>
+
+      <div class="row3">
+        <div><label>DOT</label><input id="hotelDot" placeholder="2725"></div>
+        <div><label>Otel Numarası</label><input id="hotelCode" readonly></div>
+        <div><label>Not</label><input id="hotelNote" placeholder="Not"></div>
+      </div>
+
+      <div class="btns" style="margin-top:10px">
+        <button class="btn green" id="saveHotelBtn" type="button">Otele Al</button>
+        <button class="btn gray" id="clearHotelBtn" type="button">Formu Temizle</button>
+        <button class="btn gray" id="cancelHotelEditBtn" type="button">Düzeltmeyi İptal Et</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Otel Kayıtları</div>
+      <div class="row2" style="margin-top:10px">
+        <div><label>Ara</label><input id="hotelSearch" placeholder="Müşteri / plaka / otel no ara"></div>
+        <div><label>Özet</label><div class="badge" id="hotelSummaryBadge">0 kayıt</div></div>
+      </div>
+      <div class="row2" style="margin-top:10px">
+        <div style="display:flex;align-items:end"><button class="btn violet" id="bulkHotelLabelsBtn" type="button">Filtredeki Etiketleri Aç</button></div>
+        <div class="row2">
+          <input id="hotelLabelLookup" placeholder="Otel no / plaka ile etiket çağır">
+          <button class="btn gray" id="hotelLabelLookupBtn" type="button">Etiketi Aç</button>
+        </div>
+      </div>
+      <div id="hotelList" class="list" style="margin-top:12px"></div>
+    </div>
+  </section>
+  
+  <section id="reports" class="screen">
+    <div class="card">
+      <div class="title">Raporlar</div>
+      <div class="subtitle">Tarih aralığına göre özet ve detay raporu.</div>
+      <div class="row3" style="margin-top:10px">
+        <div><label>Başlangıç</label><input id="reportStart" type="date"></div>
+        <div><label>Bitiş</label><input id="reportEnd" type="date"></div>
+        <div class="btns" style="grid-template-columns:1fr 1fr"><button class="btn green" id="runReportBtn" type="button">Raporla</button><button class="btn gray" id="printReportBtn" type="button">Yazdır / PDF</button><button class="btn violet" id="dayEndReportBtn" type="button">Gün Sonu Raporu</button></div>
+      </div>
+    </div>
+
+    <div class="kpis" style="margin-top:14px">
+      <div class="kpi"><div class="t">Gelir</div><div class="v" id="r_income">0 ₺</div></div>
+      <div class="kpi"><div class="t">Gider</div><div class="v" id="r_expense">0 ₺</div></div>
+      <div class="kpi"><div class="t">Net</div><div class="v" id="r_net">0 ₺</div></div>
+      <div class="kpi"><div class="t">Tahsilat</div><div class="v" id="r_tahsilat">0 ₺</div></div>
+      <div class="kpi"><div class="t">Veresiye Satış</div><div class="v" id="r_veresiye">0 ₺</div></div>
+      <div class="kpi"><div class="t">Kayıt</div><div class="v" id="r_count">0</div></div>
+      <div class="kpi"><div class="t">Toplam Stok</div><div class="v" id="r_stock_qty">0</div></div>
+      <div class="kpi"><div class="t">Kritik Stok</div><div class="v" id="r_low_stock">0</div></div>
+      <div class="kpi"><div class="t">Otel Kayıt</div><div class="v" id="r_hotel_count">0</div></div>
+    </div>
+
+    <div class="kpis" style="margin-top:14px">
+      <div class="kpi"><div class="t">Lastik Satış Cirosu</div><div class="v" id="r_tire_revenue">0 ₺</div></div>
+      <div class="kpi"><div class="t">Lastik Maliyeti</div><div class="v" id="r_tire_cost">0 ₺</div></div>
+      <div class="kpi"><div class="t">Lastik Net Kârı</div><div class="v" id="r_tire_profit">0 ₺</div></div>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:18px">Lastik Satış Kâr Detayı</div>
+      <div id="reportTireProfitList" class="list" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:18px">Marka Bazlı Lastik Kârı</div>
+      <div id="reportBrandProfitList" class="list" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:18px">Ebat Bazlı Lastik Kârı</div>
+      <div id="reportSizeProfitList" class="list" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:18px">Gün Sonu Özeti</div>
+      <div class="small">Bugünün gelir, gider, net, nakit, veresiye ve lastik kâr özeti.</div>
+      <div class="kpis" style="margin-top:12px">
+        <div class="kpi"><div class="t">Bugün Gelir</div><div class="v" id="d_income">0 ₺</div></div>
+        <div class="kpi"><div class="t">Bugün Gider</div><div class="v" id="d_expense">0 ₺</div></div>
+        <div class="kpi"><div class="t">Bugün Net</div><div class="v" id="d_net">0 ₺</div></div>
+        <div class="kpi"><div class="t">Bugün Nakit</div><div class="v" id="d_cash">0 ₺</div></div>
+        <div class="kpi"><div class="t">Bugün Veresiye</div><div class="v" id="d_credit">0 ₺</div></div>
+        <div class="kpi"><div class="t">Bugün Lastik Kârı</div><div class="v" id="d_tire_profit">0 ₺</div></div>
+        <div class="kpi"><div class="t">Bugün İşlem</div><div class="v" id="d_count">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:18px">Firma Bazlı Kalan Borç</div>
+      <div id="reportFirmList" class="list" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:18px">Kritik / Azalan Stok</div>
+      <div id="reportStockList" class="list" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:18px">Detay Kayıtlar</div>
+      <div id="reportList" class="list" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+</div>
+
+
+
+<datalist id="brandOptions"></datalist>
+<datalist id="sizeOptions"></datalist>
+
+<div id="labelModal" class="modal">
+  <div class="modal-card">
+    <div class="title" style="font-size:20px">Etiket Önizleme</div>
+    <div class="preview-toolbar">
+      <button class="btn gray" id="closeLabelModalBtn" type="button">Kapat</button>
+      <button class="btn violet" id="printLabelBtn" type="button">Yazdır / PDF</button>
+      <button class="btn green" id="downloadLabelPngBtn" type="button">PNG İndir</button>
+      <button class="btn green" id="downloadLabelA4PngBtn" type="button">A4 PNG İndir</button>
+      <button class="btn gray" id="downloadLabelSvgBtn" type="button">SVG İndir</button>
+    </div>
+    <div class="small">A4 yatay • 4 etiket • otel no ve plaka büyük.</div>
+    <div id="labelPreviewBody" class="preview-body"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+(() => {
+  const BRAND_PRESETS = ["MICHELIN", "GOODYEAR", "PIRELLI", "CONTINENTAL", "BRIDGESTONE", "LASSA", "PETLAS", "HANKOOK", "KUMHO", "NEXEN", "FALKEN", "YOKOHAMA", "TOYO", "BFGOODRICH", "GENERAL TIRE", "DUNLOP", "FULDA", "SEMPERIT", "DEBICA", "MATADOR", "MAXXIS", "VIKING", "SAVA", "GISLAVED", "UNIROYAL", "KORMORAN", "KLEBER", "BARUM", "DAYTON", "FIRESTONE", "COOPER", "MARSHAL", "MILESTONE", "RAPID", "STARMAXX", "SAILUN", "ROADSTONE", "PRELLI", "LİNGLONG", "LINGLONG", "TRIANGLE", "POWERTRAC", "HIFLY", "LEAO", "MAYRUN", "MIRAGE", "WESTLAKE", "MOMO", "NOKIAN", "VREDESTEIN"];
+  const SIZE_PRESETS = ["145/70 R13", "155/70 R13", "165/70 R13", "175/70 R13", "185/60 R13", "185/70 R13", "165/65 R14", "165/70 R14", "175/65 R14", "175/70 R14", "185/60 R14", "185/65 R14", "185/70 R14", "195/60 R14", "195/70 R14", "185/55 R15", "185/60 R15", "185/65 R15", "195/50 R15", "195/55 R15", "195/60 R15", "195/65 R15", "205/50 R15", "205/55 R15", "205/60 R15", "205/65 R15", "215/65 R15", "225/70 R15", "195/45 R16", "195/55 R16", "205/45 R16", "205/50 R16", "205/55 R16", "205/60 R16", "205/65 R16", "215/55 R16", "215/60 R16", "215/65 R16", "225/50 R16", "225/55 R16", "225/60 R16", "235/60 R16", "205/40 R17", "205/45 R17", "215/40 R17", "215/45 R17", "215/50 R17", "215/55 R17", "225/45 R17", "225/50 R17", "225/55 R17", "235/45 R17", "235/50 R17", "235/55 R17", "245/45 R17", "245/65 R17", "215/35 R18", "225/40 R18", "225/45 R18", "225/55 R18", "235/40 R18", "235/45 R18", "235/50 R18", "235/55 R18", "245/40 R18", "245/45 R18", "255/35 R18", "255/55 R18", "265/60 R18", "225/40 R19", "235/35 R19", "235/40 R19", "245/40 R19", "245/45 R19", "255/35 R19", "255/40 R19", "255/50 R19", "265/50 R19", "275/40 R19", "285/45 R19", "235/55 R20", "245/40 R20", "245/45 R20", "255/35 R20", "255/40 R20", "255/45 R20", "265/45 R20", "275/40 R20", "275/45 R20", "285/50 R20", "245/35 R21", "255/35 R21", "265/35 R21", "275/35 R21", "275/40 R21", "285/35 R21", "295/35 R21", "165/70 R14 C", "175/65 R14 C", "175/70 R14 C", "185/75 R16 C", "195/60 R16 C", "195/65 R16 C", "195/70 R15 C", "195/75 R16 C", "205/65 R16 C", "205/70 R15 C", "205/75 R16 C", "215/60 R16 C", "215/65 R15 C", "215/65 R16 C", "215/70 R15 C", "215/75 R16 C", "225/65 R16 C", "225/70 R15 C", "225/75 R16 C", "235/65 R16 C", "235/65 R16C", "235/60 R17 C", "235/65 R16C 115/113R", "6.50 R16 C", "7.00 R16 C", "7.50 R16 C"];
+
+  const KEY = 'lastik_market_clean_start_v1';
+  const SCREENS = [
+    {id:'home', label:'Ana Ekran'},
+    {id:'sales', label:'Satış'},
+    {id:'expenses', label:'Gider'},
+    {id:'receivables', label:'Veresiye'},
+    {id:'stock', label:'Stok'},
+    {id:'hotel', label:'Otel'},
+    {id:'reports', label:'Rapor'}
+  ];
+  let activeFirm = '';
+  let editingFirmJobId = null;
+  let editingStockId = null;
+  let editingBatchId = null;
+  let editingExpenseId = null;
+  let editingHotelId = null;
+  let editingIncomeId = null;
+  let saleCart = [];
+
+  function qs(s){ return document.querySelector(s); }
+  function qsa(s){ return [...document.querySelectorAll(s)]; }
+  function today(){ return new Date().toISOString().slice(0,10); }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function money(v){ return new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:2}).format(Number(v||0)); }
+  function normalizeText(v){ return String(v||'').trim().toUpperCase(); }
+  function esc(str){ return String(str ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function toast(msg){
+    const el=qs('#toast'); if(!el) return;
+    el.textContent=msg; el.classList.add('show');
+    clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'), 2200);
+  }
+
+  const AUTO_BACKUP_KEY = KEY + '_auto_backups';
+  const AUTO_BACKUP_MAX = 5;
+
+  function defaultState(){ return { firms:['GENEL'], income:[], expenses:[], receivables:[], stock:[], hotels:[], barcodeDefs:{}, services:[] }; }
+
+  function loadAutoBackups(){
+    try{
+      const raw = localStorage.getItem(AUTO_BACKUP_KEY);
+      if(!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function saveAutoBackups(list){
+    try{
+      localStorage.setItem(AUTO_BACKUP_KEY, JSON.stringify(Array.isArray(list) ? list : []));
+      return true;
+    }catch(e){
+      console.error(e);
+      return false;
+    }
+  }
+
+  function tryRestoreLatestAutoBackup(){
+    try{
+      const backups = loadAutoBackups();
+      if(!backups.length) return null;
+      const latest = backups[backups.length - 1];
+      if(!latest || !latest.data || typeof latest.data !== 'object') return null;
+      return latest.data;
+    }catch(e){
+      return null;
+    }
+  }
+
+  function loadState(){
+    const d = defaultState();
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw){
+        const restored = tryRestoreLatestAutoBackup();
+        if(!restored) return d;
+        return normalizeImportedState(restored);
+      }
+      const parsed = JSON.parse(raw);
+      return {
+        firms: Array.isArray(parsed.firms) && parsed.firms.length ? [...new Set(parsed.firms.map(normalizeText).filter(Boolean))] : d.firms,
+        income: Array.isArray(parsed.income) ? parsed.income : d.income,
+        expenses: Array.isArray(parsed.expenses) ? parsed.expenses : d.expenses,
+        receivables: Array.isArray(parsed.receivables) ? parsed.receivables : d.receivables,
+        stock: Array.isArray(parsed.stock) ? parsed.stock : d.stock,
+        hotels: Array.isArray(parsed.hotels) ? parsed.hotels : d.hotels,
+        barcodeDefs: parsed.barcodeDefs && typeof parsed.barcodeDefs === 'object' ? parsed.barcodeDefs : d.barcodeDefs,
+        services: Array.isArray(parsed.services) ? parsed.services : d.services
+      };
+    }catch(e){
+      const restored = tryRestoreLatestAutoBackup();
+      return restored ? normalizeImportedState(restored) : d;
+    }
+  }
+  let S = loadState();
+
+  function writeAutoBackup(serializedState, reason='AUTO'){
+    try{
+      const backups = loadAutoBackups();
+      const latest = backups[backups.length - 1];
+      if(latest && JSON.stringify(latest.data || {}) === serializedState) return true;
+      backups.push({
+        id: uid(),
+        ts: new Date().toISOString(),
+        reason: reason || 'AUTO',
+        data: JSON.parse(serializedState)
+      });
+      while(backups.length > AUTO_BACKUP_MAX) backups.shift();
+      if(saveAutoBackups(backups)) return true;
+      while(backups.length > 1){
+        backups.shift();
+        if(saveAutoBackups(backups)) return true;
+      }
+      return false;
+    }catch(e){
+      console.error(e);
+      return false;
+    }
+  }
+
+  function getLastAutoBackupMeta(){
+    const backups = loadAutoBackups();
+    return backups.length ? backups[backups.length - 1] : null;
+  }
+
+  function formatAutoBackupTime(ts){
+    if(!ts) return '-';
+    const d = new Date(ts);
+    if(Number.isNaN(d.getTime())) return '-';
+    return d.toLocaleString('tr-TR');
+  }
+
+  function renderAutoBackupInfo(){
+    const el = qs('#autoBackupInfo');
+    if(!el) return;
+    const meta = getLastAutoBackupMeta();
+    el.textContent = meta
+      ? `Otomatik yedek açık • son yedek: ${formatAutoBackupTime(meta.ts)} • saklanan oto yedek: ${loadAutoBackups().length}`
+      : 'Otomatik yedek açık • ilk kayıt ile birlikte oluşturulacak';
+  }
+
+  function saveState(reason='AUTO'){
+    const serialized = JSON.stringify(S);
+    localStorage.setItem(KEY, serialized);
+    writeAutoBackup(serialized, reason);
+    renderAutoBackupInfo();
+  }
+
+  function normalizeImportedState(parsed){
+    const d = defaultState();
+    return {
+      firms: Array.isArray(parsed?.firms) && parsed.firms.length ? [...new Set(parsed.firms.map(normalizeText).filter(Boolean))] : d.firms,
+      income: Array.isArray(parsed?.income) ? parsed.income : d.income,
+      expenses: Array.isArray(parsed?.expenses) ? parsed.expenses : d.expenses,
+      receivables: Array.isArray(parsed?.receivables) ? parsed.receivables : d.receivables,
+      stock: Array.isArray(parsed?.stock) ? parsed.stock : d.stock,
+      hotels: Array.isArray(parsed?.hotels) ? parsed.hotels : d.hotels,
+      barcodeDefs: parsed?.barcodeDefs && typeof parsed.barcodeDefs === 'object' ? parsed.barcodeDefs : d.barcodeDefs,
+      services: Array.isArray(parsed?.services) ? parsed.services : Array.isArray(S?.services) ? S.services : []
+    };
+  }
+
+  function buildBackupPayload(){
+    return {
+      app: 'Lastik Market',
+      version: 'v25',
+      exportedAt: new Date().toISOString(),
+      key: KEY,
+      data: {
+        firms: Array.isArray(S.firms) ? S.firms : [],
+        income: Array.isArray(S.income) ? S.income : [],
+        expenses: Array.isArray(S.expenses) ? S.expenses : [],
+        receivables: Array.isArray(S.receivables) ? S.receivables : [],
+        stock: Array.isArray(S.stock) ? S.stock : [],
+        hotels: Array.isArray(S.hotels) ? S.hotels : [],
+        barcodeDefs: S.barcodeDefs && typeof S.barcodeDefs === 'object' ? S.barcodeDefs : {},
+        services: Array.isArray(S.services) ? S.services : []
+      }
+    };
+  }
+
+  
+  function isAndroidDevice(){
+    return /Android/i.test(navigator.userAgent || '');
+  }
+
+  function safePersistState(reason='LIFECYCLE'){
+    try{
+      saveState(reason);
+      return true;
+    }catch(e){
+      try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(err){}
+      return false;
+    }
+  }
+
+  async function requestPersistentStorage(){
+    try{
+      if(navigator.storage && navigator.storage.persist){
+        await navigator.storage.persist();
+      }
+    }catch(e){}
+  }
+
+  function openBackupFilePicker(){
+    const input = qs('#backupFileInput');
+    if(!input) return;
+    try{
+      if(typeof input.showPicker === 'function'){
+        input.showPicker();
+        return;
+      }
+    }catch(e){}
+    input.classList.remove('hidden');
+    input.style.position = 'fixed';
+    input.style.left = '-9999px';
+    input.style.opacity = '0.001';
+    input.style.pointerEvents = 'none';
+    input.click();
+    setTimeout(()=>{
+      input.classList.add('hidden');
+      input.style.position = '';
+      input.style.left = '';
+      input.style.opacity = '';
+      input.style.pointerEvents = '';
+    }, 800);
+  }
+
+  async function downloadBlobForAndroid(blob, filename){
+    const file = new File([blob], filename, {type: blob.type || 'application/octet-stream'});
+    if(isAndroidDevice() && navigator.share && navigator.canShare){
+      try{
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({files:[file], title: filename, text: 'Lastik Market yedeği'});
+          return true;
+        }
+      }catch(e){}
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1500);
+    return true;
+  }
+
+function exportBackup(){
+    try{
+      safePersistState('EXPORT');
+      const payload = buildBackupPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json;charset=utf-8'});
+      const stamp = new Date().toISOString().slice(0,19).replace(/[T:]/g,'-');
+      const filename = `lastik-market-yedek-${stamp}.json`;
+      downloadBlobForAndroid(blob, filename)
+        .then(()=>toast(isAndroidDevice() ? 'Yedek hazırlandı' : 'Yedek indirildi'))
+        .catch(()=>toast('Yedek alınamadı'));
+    }catch(err){
+      console.error(err);
+      toast('Yedek alınamadı');
+    }
+  }
+
+  async function importBackupFromFile(file){
+    try{
+      if(!file) return;
+      const raw = await file.text();
+      const parsed = JSON.parse(raw);
+      const source = parsed && typeof parsed === 'object' && parsed.data && typeof parsed.data === 'object' ? parsed.data : parsed;
+      const nextState = normalizeImportedState(source || {});
+      if(!Array.isArray(nextState.firms)) throw new Error('Geçersiz yedek dosyası');
+      S = nextState;
+      if(!Array.isArray(S.services)) S.services = [];
+      saveState();
+      saleCart = [];
+      activeFirm = '';
+      editingFirmJobId = null;
+      editingStockId = null;
+      editingBatchId = null;
+      editingExpenseId = null;
+      editingHotelId = null;
+      editingIncomeId = null;
+      refreshPresetLists();
+      refreshServiceList();
+      renderHome();
+      renderReceivables();
+      renderExpenses();
+      renderHotel();
+      renderStock();
+      fillSaleStockCardSelect();
+      renderSalesHistory();
+      runReport();
+      clearExpenseForm();
+      clearHotelForm();
+      clearStockForm();
+      clearSaleForm();
+      clearFirmJobForm();
+      clearFirmJobEditForm();
+      toast('Yedek yüklendi');
+      openScreen('home');
+    }catch(err){
+      console.error(err);
+      toast('Yedek dosyası okunamadı');
+    }
+  }
+
+
+  function fillOptionList(id, arr){
+    const el = qs('#' + id);
+    if(!el) return;
+    const existing = new Set(arr.map(x => normalizeText(x)));
+    const dynamic = [];
+    if(id === 'brandOptions'){
+      dynamic.push(...(S.stock||[]).map(x=>x.brand), ...(S.hotels||[]).map(x=>x.brand));
+    }else if(id === 'sizeOptions'){
+      dynamic.push(...(S.stock||[]).map(x=>x.size), ...(S.hotels||[]).map(x=>x.size));
+    }
+    dynamic.forEach(v=>{
+      const n = normalizeText(v);
+      if(n && !existing.has(n)){
+        existing.add(n);
+        arr.push(n);
+      }
+    });
+    el.innerHTML = arr.map(v => `<option value="${esc(v)}"></option>`).join('');
+  }
+
+  function refreshPresetLists(){
+    fillOptionList('brandOptions', [...BRAND_PRESETS]);
+    fillOptionList('sizeOptions', [...SIZE_PRESETS]);
+  }
+
+  function buildNav(){
+    const nav = qs('#nav');
+    nav.innerHTML = SCREENS.map(s => `<button data-open="${s.id}">${s.label}</button>`).join('');
+    nav.querySelectorAll('[data-open]').forEach(btn=>{ btn.onclick = () => openScreen(btn.getAttribute('data-open')); });
+    syncNav();
+  }
+  function openScreen(id){
+    notifyAndroidScreen(id);
+    if(id !== 'stock' && stockCameraStream) stopStockCameraScan(false);
+    qsa('.screen').forEach(s => s.classList.remove('active'));
+    const el = qs('#' + id);
+    if(el) el.classList.add('active');
+    qsa('#nav button').forEach(b => b.classList.toggle('active', b.getAttribute('data-open') === id));
+  }
+  function syncNav(){ qsa('#nav button').forEach(b => b.classList.toggle('active', b.getAttribute('data-open') === 'home')); }
+
+  function addFirm(name){
+    const firm = normalizeText(name);
+    if(!firm) return toast('Firma adı gir.');
+    if(!S.firms.includes(firm)) S.firms.push(firm);
+    S.firms.sort((a,b)=>a.localeCompare(b,'tr'));
+    saveBarcodeDefinitionIfPossible();
+    saveState(); renderHome(); renderFirmList(); toast('Firma eklendi');
+  }
+
+  function getFirmBalance(firm){
+    const f = normalizeText(firm);
+    const borc = (S.receivables||[]).filter(x => normalizeText(x.firm)===f && x.type==='BORC').reduce((s,x)=>s+Number(x.amount||0),0);
+    const tahsilat = (S.receivables||[]).filter(x => normalizeText(x.firm)===f && x.type==='TAHSILAT').reduce((s,x)=>s+Number(x.amount||0),0);
+    return borc - tahsilat;
+  }
+
+  function focusFirmDetailCard(){
+    const el = qs('#firmDetailCard');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function clearFirmJobForm(){
+    ['#jobDate','#jobCustomer','#jobPlate','#jobTitle','#jobAmount','#jobNote'].forEach(s => qs(s).value='');
+    if(qs('#collectionPaymentType')) qs('#collectionPaymentType').value = 'NAKIT';
+    qs('#jobDate').value = today();
+  }
+
+  function clearFirmJobEditForm(){
+    editingFirmJobId = null;
+    ['#firmJobEditDate','#firmJobEditCustomer','#firmJobEditPlate','#firmJobEditTitle','#firmJobEditAmount','#firmJobEditPayment','#firmJobEditFirm','#firmJobEditNote'].forEach(s=>{ if(qs(s)) qs(s).value=''; });
+    qs('#firmJobEditWrap').classList.add('hidden');
+  }
+
+  function selectFirm(firm){
+    activeFirm = normalizeText(firm||'');
+    qs('#activeFirmInput').value = activeFirm;
+    qs('#activeFirmLabel').textContent = activeFirm ? `Seçili firma: ${activeFirm}` : 'Seçili firma: yok';
+    renderReceivables();
+    focusFirmDetailCard();
+  }
+
+  function renderFirmList(){
+    const q = normalizeText(qs('#firmSearch').value);
+    const firms = (S.firms||[]).filter(f => !q || f.includes(q)).sort((a,b)=>a.localeCompare(b,'tr'));
+    const box = qs('#firmList');
+    box.innerHTML = firms.map(f => {
+      const balance = getFirmBalance(f);
+      const jobCount = (S.income||[]).filter(x => normalizeText(x.firm)===normalizeText(f)).length;
+      return `<div class="item">
+        <div class="title">${esc(f)}</div>
+        <div class="money">${money(balance)}</div>
+        <div class="meta">İş sayısı: ${jobCount}</div>
+        <div class="actions"><button class="btn green" type="button" data-firm-open="${esc(f)}">Aç</button><button class="btn gray" type="button" disabled>—</button></div>
+      </div>`;
+    }).join('') || '<div class="item">Firma yok.</div>';
+    box.querySelectorAll('[data-firm-open]').forEach(btn=>{ btn.onclick = ()=> selectFirm(btn.getAttribute('data-firm-open')); });
+  }
+
+  function saveFirmJob(){
+    if(!activeFirm) return toast('Önce firma seç.');
+    const title = normalizeText(qs('#jobTitle').value);
+    const amount = Number(qs('#jobAmount').value||0);
+    const row = {
+      id: uid(), firm: activeFirm, payment: 'VERESIYE', category: 'HIZMET',
+      title, amount, date: qs('#jobDate').value || today(),
+      customer: normalizeText(qs('#jobCustomer').value),
+      plate: normalizeText(qs('#jobPlate').value),
+      note: qs('#jobNote').value.trim(), createdAt: new Date().toLocaleString('tr-TR')
+    };
+    if(!row.title) return toast('İş başlığı gir.');
+    if(row.amount <= 0) return toast('Geçerli tutar gir.');
+    S.income.unshift(row);
+    S.receivables.unshift({
+      id: uid(), linkIncomeId: row.id, firm: row.firm, type: 'BORC', amount: row.amount, date: row.date,
+      customer: row.customer, plate: row.plate, note: row.note || row.title || 'Satış',
+      createdAt: new Date().toLocaleString('tr-TR')
+    });
+    saveState(); clearFirmJobForm(); renderHome(); renderReceivables(); toast('Veresiye iş kaydı eklendi');
+  }
+
+  function saveCollection(){
+    if(!activeFirm) return toast('Önce firma seç.');
+    const amount = Number(qs('#jobAmount').value||0);
+    if(amount <= 0) return toast('Tahsilat için tutar gir.');
+    S.receivables.unshift({
+      id: uid(), firm: activeFirm, type: 'TAHSILAT', amount, date: qs('#jobDate').value || today(),
+      payment: qs('#collectionPaymentType')?.value || 'NAKIT',
+      customer: normalizeText(qs('#jobCustomer').value), plate: normalizeText(qs('#jobPlate').value),
+      note: qs('#jobNote').value.trim() || 'Tahsilat', createdAt: new Date().toLocaleString('tr-TR')
+    });
+    saveState(); clearFirmJobForm(); renderHome(); renderReceivables(); toast('Tahsilat kaydedildi');
+  }
+
+  function startEditFirmJob(id){
+    const row = (S.income||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('İş kaydı bulunamadı.');
+    editingFirmJobId = id;
+    activeFirm = normalizeText(row.firm);
+    qs('#activeFirmInput').value = activeFirm;
+    qs('#activeFirmLabel').textContent = `Seçili firma: ${activeFirm}`;
+    qs('#firmJobEditDate').value = row.date || today();
+    qs('#firmJobEditCustomer').value = row.customer || '';
+    qs('#firmJobEditPlate').value = row.plate || '';
+    qs('#firmJobEditTitle').value = row.title || '';
+    qs('#firmJobEditAmount').value = String(Number(row.amount||0));
+    qs('#firmJobEditPayment').value = row.payment || '';
+    qs('#firmJobEditFirm').value = row.firm || '';
+    qs('#firmJobEditNote').value = row.note || '';
+    qs('#firmJobEditWrap').classList.remove('hidden');
+    focusFirmDetailCard();
+    qs('#firmJobEditWrap').scrollIntoView({behavior:'smooth', block:'start'});
+    toast('İş kaydı düzenlemeye açıldı');
+  }
+
+  function saveEditFirmJob(){
+    if(!editingFirmJobId) return toast('Düzenlenecek iş kaydı seçilmedi.');
+    const idx = (S.income||[]).findIndex(x => String(x.id)===String(editingFirmJobId));
+    if(idx < 0) return toast('İş kaydı bulunamadı.');
+    const old = S.income[idx];
+    const updated = {
+      ...old,
+      date: qs('#firmJobEditDate').value || old.date,
+      customer: normalizeText(qs('#firmJobEditCustomer').value),
+      plate: normalizeText(qs('#firmJobEditPlate').value),
+      title: normalizeText(qs('#firmJobEditTitle').value),
+      amount: Number(qs('#firmJobEditAmount').value||0),
+      note: qs('#firmJobEditNote').value.trim()
+    };
+    if(!updated.title) return toast('İş başlığı gerekli.');
+    if(updated.amount < 0) return toast('Tutar negatif olamaz.');
+    S.income[idx] = updated;
+    const ridx = (S.receivables||[]).findIndex(x => String(x.linkIncomeId||'')===String(old.id) && x.type==='BORC');
+    if(ridx >= 0){
+      S.receivables[ridx] = { ...S.receivables[ridx], amount: Number(updated.amount||0), date: updated.date, customer: updated.customer || '', plate: updated.plate || '', note: updated.note || updated.title || 'Satış' };
+    }
+    saveState(); renderHome(); renderReceivables(); clearFirmJobEditForm(); toast('Firma iş kaydı güncellendi');
+  }
+
+  function deleteFirmJob(id){
+    const row = (S.income||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('İş kaydı bulunamadı.');
+    if(!confirm('İş kaydı silinsin mi?')) return;
+    S.income = (S.income||[]).filter(x => String(x.id)!==String(id));
+    S.receivables = (S.receivables||[]).filter(x => String(x.linkIncomeId||'')!==String(id));
+    saveState(); renderHome(); renderReceivables(); clearFirmJobEditForm(); toast('İş kaydı silindi');
+  }
+
+  function renderFirmJobs(){
+    const box = qs('#firmJobsList');
+    if(!activeFirm){
+      box.innerHTML = '<div class="item">Soldaki listeden bir firma aç.</div>';
+      return;
+    }
+    const rows = (S.income||[]).filter(x => normalizeText(x.firm)===normalizeText(activeFirm)).sort((a,b)=>String(b.date+' '+b.createdAt).localeCompare(String(a.date+' '+a.createdAt),'tr'));
+    box.innerHTML = rows.length ? rows.map(r => `<div class="item">
+      <div class="title">${esc(r.title||'-')}</div>
+      <div class="money">${money(r.amount||0)}</div>
+      <div class="meta">${esc(r.date)} • ${esc(r.payment||'-')}${r.customer ? ` • ${esc(r.customer)}` : ''}${r.plate ? ` • ${esc(r.plate)}` : ''}</div>
+      <div class="small">${esc(r.note||'')}</div>
+      <div class="actions">
+        <button class="btn green" type="button" data-firm-job-action="edit" data-id="${r.id}">Düzenle</button>
+        <button class="btn red" type="button" data-firm-job-action="delete" data-id="${r.id}">Sil</button>
+      </div>
+    </div>`).join('') : '<div class="item">Bu firmaya ait iş kaydı yok.</div>';
+    box.querySelectorAll('[data-firm-job-action]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const action = btn.getAttribute('data-firm-job-action');
+        const id = btn.getAttribute('data-id');
+        if(action === 'edit') startEditFirmJob(id);
+        if(action === 'delete') deleteFirmJob(id);
+      };
+    });
+  }
+
+  function renderReceivableMovements(){
+    const box = qs('#cariList');
+    if(!activeFirm){
+      box.innerHTML = '<div class="item">Soldaki listeden bir firma aç.</div>';
+      return;
+    }
+    const rows = (S.receivables||[]).filter(x => normalizeText(x.firm)===normalizeText(activeFirm)).sort((a,b)=>String(b.date+' '+b.createdAt).localeCompare(String(a.date+' '+a.createdAt),'tr'));
+    box.innerHTML = rows.length ? rows.map(r => `<div class="item">
+      <div class="title">${r.type==='BORC' ? 'Borç' : 'Tahsilat'} • ${money(r.amount||0)}</div>
+      <div class="meta">${esc(r.date)}${r.type==='TAHSILAT' ? ` • ${esc((r.payment||'NAKIT').replaceAll('_',' '))}` : ''}${r.customer ? ` • ${esc(r.customer)}` : ''}${r.plate ? ` • ${esc(r.plate)}` : ''}</div>
+      <div class="small">${esc(r.note||'')}</div>
+    </div>`).join('') : '<div class="item">Hareket yok.</div>';
+  }
+
+  function renderReceivables(){
+    renderFirmList();
+    const firm = normalizeText(activeFirm||'');
+    qs('#activeFirmInput').value = firm;
+    qs('#activeFirmLabel').textContent = firm ? `Seçili firma: ${firm}` : 'Seçili firma: yok';
+    if(!firm){
+      qs('#activeFirmBalance').textContent = money(0);
+      qs('#activeFirmCount').textContent = '0';
+      qs('#activeFirmJobs').textContent = '0';
+      qs('#cariList').innerHTML = '<div class="item">Soldaki listeden bir firma aç.</div>';
+      qs('#firmJobsList').innerHTML = '<div class="item">Soldaki listeden bir firma aç.</div>';
+      clearFirmJobEditForm();
+      return;
+    }
+    const movements = (S.receivables||[]).filter(x => normalizeText(x.firm)===firm);
+    const jobs = (S.income||[]).filter(x => normalizeText(x.firm)===firm);
+    qs('#activeFirmBalance').textContent = money(getFirmBalance(firm));
+    qs('#activeFirmCount').textContent = String(movements.length);
+    qs('#activeFirmJobs').textContent = String(jobs.length);
+    renderReceivableMovements();
+    renderFirmJobs();
+  }
+
+
+
+
+
+
+  function fitFontByLen(text, max, min){
+    const t = String(text||'');
+    if(t.length <= 8) return max;
+    if(t.length >= 28) return min;
+    const ratio = (t.length - 8) / 20;
+    return max - ((max-min) * ratio);
+  }
+
+  function labelEsc(s){ return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  function buildLabelSvg(row, seq, total){
+    const CELL_W = row._cellW || ((297-5)/2);
+    const CELL_H = row._cellH || ((210-5)/2);
+
+    const customer = String(row.customer || '').trim();
+    const hotelCode = String(row.hotelCode || '-').trim();
+    const plate = String(row.plate || '-').trim();
+    const brandSize = [row.brand,row.size].filter(Boolean).join(' ').trim() || '-';
+    const location = `${row.floor||'-'} / KORİDOR ${row.corridor||'-'}`;
+    const dot = String(row.dot || '-').trim();
+
+    const codeSize = Math.min(fitFontByLen(hotelCode, 15, 10), fitFontByLen(plate, 15, 10));
+    const customerSize = fitFontByLen(customer, 3.9, 3.0);
+
+    return `
+    <g>
+      <rect x="3" y="3" width="${CELL_W-6}" height="${CELL_H-6}" rx="4" ry="4" fill="#fff" stroke="#666" stroke-width="0.8"/>
+
+      <text x="${CELL_W/2}" y="11.5" text-anchor="middle" font-size="${customerSize}" font-weight="600" fill="#444">${labelEsc(customer)}</text>
+
+      <text x="${CELL_W/2}" y="26.5" text-anchor="middle" font-size="${codeSize}" font-weight="900" fill="#000">${labelEsc(hotelCode)}</text>
+      <text x="${CELL_W/2}" y="33.5" text-anchor="middle" font-size="4.2" font-weight="700" fill="#000">${seq}/${total}</text>
+
+      <rect x="8" y="38" width="${CELL_W-16}" height="22" rx="3" ry="3" fill="#fff" stroke="#94a3b8" stroke-width="0.8"/>
+      <text x="13" y="44.5" font-size="3.6" font-weight="700" fill="#334155">PLAKA</text>
+      <text x="${CELL_W/2}" y="55.5" text-anchor="middle" font-size="${codeSize}" font-weight="900" fill="#000">${labelEsc(plate)}</text>
+
+      <rect x="8" y="64" width="${CELL_W-16}" height="8.5" rx="2.4" ry="2.4" fill="#fff" stroke="#94a3b8" stroke-width="0.8"/>
+      <text x="13" y="69.7" font-size="4.0" font-weight="700" fill="#000">${labelEsc(brandSize)}</text>
+
+      <rect x="8" y="75.5" width="${CELL_W-16}" height="8.5" rx="2.4" ry="2.4" fill="#fff" stroke="#94a3b8" stroke-width="0.8"/>
+      <text x="13" y="81.2" font-size="4.0" font-weight="700" fill="#000">${labelEsc(location)}</text>
+
+      <rect x="8" y="87" width="${CELL_W-16}" height="8.5" rx="2.4" ry="2.4" fill="#fff" stroke="#94a3b8" stroke-width="0.8"/>
+      <text x="13" y="92.7" font-size="4.0" font-weight="700" fill="#000">${labelEsc(dot)}</text>
+    </g>`;
+  }
+  function buildHotelLabelSheets(rows){
+    const MM_W=297, MM_H=210;
+    const GAP=5; // mm kesim boşluğu
+    const CELL_W=(MM_W-GAP)/2, CELL_H=(MM_H-GAP)/2;
+    const labels = [];
+    rows.forEach(r=>{
+      const count = Math.max(1, Number(r.qty||1));
+      for(let i=1;i<=count;i++) labels.push(buildLabelSvg({...r, _cellW:CELL_W, _cellH:CELL_H}, i, count));
+    });
+    const sheets = [];
+    for(let i=0;i<labels.length;i+=4){
+      const parts = labels.slice(i, i+4);
+      while(parts.length < 4) parts.push('');
+      sheets.push(`
+        <svg class="svg-sheet" xmlns="http://www.w3.org/2000/svg" width="${MM_W}mm" height="${MM_H}mm" viewBox="0 0 ${MM_W} ${MM_H}" preserveAspectRatio="none">
+          <rect x="0" y="0" width="${MM_W}" height="${MM_H}" fill="#fff"/>
+          <g transform="translate(0,0)">${parts[0]}</g>
+          <g transform="translate(${CELL_W + GAP},0)">${parts[1]}</g>
+          <g transform="translate(0,${CELL_H + GAP})">${parts[2]}</g>
+          <g transform="translate(${CELL_W + GAP},${CELL_H + GAP})">${parts[3]}</g>
+
+          <!-- kesim kılavuz çizgileri -->
+          <line x1="${CELL_W + GAP/2}" y1="0" x2="${CELL_W + GAP/2}" y2="${MM_H}" stroke="#999" stroke-width="0.45" stroke-dasharray="2.5 2"/>
+          <line x1="0" y1="${CELL_H + GAP/2}" x2="${MM_W}" y2="${CELL_H + GAP/2}" stroke="#999" stroke-width="0.45" stroke-dasharray="2.5 2"/>
+        </svg>`);
+    }
+    return sheets.join('');
+  }
+
+  function openLabelPreviewFromRows(rows){
+    if(!rows || !rows.length) return toast('Etiket için kayıt yok.');
+    qs('#labelPreviewBody').innerHTML = buildHotelLabelSheets(rows);
+    qs('#labelModal').classList.add('show');
+  }
+
+  function closeLabelPreview(){
+    qs('#labelModal').classList.remove('show');
+    qs('#labelPreviewBody').innerHTML = '';
+  }
+
+  function openHotelLabelById(id){
+    const row = (S.hotels||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('Otel kaydı bulunamadı.');
+    openLabelPreviewFromRows([row]);
+  }
+
+  function openFilteredHotelLabels(){
+    const q = normalizeText(qs('#hotelSearch')?.value);
+    const rows = (S.hotels||[]).filter(r => !q || [r.customer,r.plate,r.hotelCode,r.floor,r.corridor,r.brand,r.size].join(' ').toUpperCase().includes(q));
+    openLabelPreviewFromRows(rows);
+  }
+
+  function openHotelLabelByLookup(){
+    const q = normalizeText(qs('#hotelLabelLookup')?.value);
+    if(!q) return toast('Otel no veya plaka gir.');
+    const row = (S.hotels||[]).find(r => normalizeText(r.hotelCode)===q || normalizeText(r.plate)===q);
+    if(!row) return toast('Kayıt bulunamadı.');
+    openLabelPreviewFromRows([row]);
+  }
+
+  async function downloadLabelPngs(){
+    const sheets = [...document.querySelectorAll('#labelPreviewBody .svg-sheet')];
+    if(!sheets.length) return toast('Önce etiket aç.');
+    for(let i=0;i<sheets.length;i++){
+      const svg = sheets[i];
+      const xml = new XMLSerializer().serializeToString(svg);
+      const blob = new Blob([xml], {type:'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      await new Promise((resolve, reject)=>{
+        img.onload = ()=>{
+          const canvas = document.createElement('canvas');
+          canvas.width = 1600;
+          canvas.height = Math.round(1600 * (210/297));
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0,0,canvas.width,canvas.height);
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          canvas.toBlob(b=>{
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(b);
+            a.download = `otel-etiket-${i+1}.png`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+            resolve();
+          }, 'image/png');
+          URL.revokeObjectURL(url);
+        };
+        img.onerror = reject;
+        img.src = url;
+      });
+    }
+    toast('PNG indirildi');
+  }
+
+  function downloadLabelSvgs(){
+    const sheets = [...document.querySelectorAll('#labelPreviewBody .svg-sheet')];
+    if(!sheets.length) return toast('Önce etiket aç.');
+    sheets.forEach((svg, i)=>{
+      const xml = new XMLSerializer().serializeToString(svg);
+      const blob = new Blob([xml], {type:'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `otel-etiket-${i+1}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1500);
+    });
+    toast('SVG indirildi');
+  }
+
+
+  async function downloadSingleA4Png(){
+    const svg = document.querySelector('#labelPreviewBody .svg-sheet');
+    if(!svg) return toast('Önce etiket aç.');
+    const xml = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([xml], {type:'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    await new Promise((resolve, reject)=>{
+      img.onload = ()=>{
+        const canvas = document.createElement('canvas');
+        canvas.width = 3508;   // A4 landscape 300dpi approx
+        canvas.height = 2480;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        canvas.toBlob(b=>{
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(b);
+          a.download = 'otel-etiket-a4.png';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+          resolve();
+        }, 'image/png');
+        URL.revokeObjectURL(url);
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+    toast('A4 PNG indirildi');
+  }
+
+  function printLabels(){
+    if(!document.querySelector('#labelPreviewBody .svg-sheet')) return toast('Önce etiket aç.');
+    window.print();
+  }
+
+  function nextHotelCode(floor, corridor){
+    const yy = new Date().getFullYear().toString().slice(-2);
+    const start = floor === 'Kat2' ? 201 : 101;
+    const nums = (S.hotels||[])
+      .filter(h => String(h.floor||'') === String(floor||'Kat1'))
+      .map(h => {
+        const m = String(h.hotelCode||'').match(/^(\d{2})(\d{3})-([A-Z0-9]+)$/);
+        return m ? parseInt(m[2], 10) : null;
+      })
+      .filter(n => n !== null && !Number.isNaN(n));
+    const nextNum = nums.length ? Math.max(...nums) + 1 : start;
+    const corr = normalizeText(corridor || 'A') || 'A';
+    return `${yy}${String(nextNum).padStart(3,'0')}-${corr}`;
+  }
+
+  function updateHotelCodePreview(){
+    const floor = qs('#hotelFloor')?.value || 'Kat1';
+    const corridor = qs('#hotelCorridor')?.value || 'A';
+    if(editingHotelId){
+      const current = qs('#hotelCode').value || '';
+      const m = String(current).match(/^(\d{2})(\d{3})-([A-Z0-9]+)$/);
+      const yy = new Date().getFullYear().toString().slice(-2);
+      const seq = m ? m[2] : String(floor === 'Kat2' ? 201 : 101);
+      qs('#hotelCode').value = `${yy}${seq}-${normalizeText(corridor) || 'A'}`;
+    }else{
+      qs('#hotelCode').value = nextHotelCode(floor, corridor);
+    }
+  }
+
+  function clearHotelForm(){
+    editingHotelId = null;
+    ['#hotelCustomer','#hotelPhone','#hotelPlate','#hotelQty','#hotelBrand','#hotelSize','#hotelCorridor','#hotelDot','#hotelNote'].forEach(s=>{ if(qs(s)) qs(s).value=''; });
+    qs('#hotelGroup').value = 'BINEK';
+    qs('#hotelFloor').value = 'Kat1';
+    qs('#hotelQty').value = '4';
+    qs('#cancelHotelEditBtn').classList.add('hidden');
+    updateHotelCodePreview();
+  }
+
+  function saveHotel(){
+    const code = qs('#hotelCode').value || nextHotelCode(qs('#hotelFloor').value, qs('#hotelCorridor').value);
+    const row = {
+      id: editingHotelId || uid(),
+      customer: normalizeText(qs('#hotelCustomer').value),
+      phone: String(qs('#hotelPhone').value||'').trim(),
+      plate: normalizeText(qs('#hotelPlate').value),
+      qty: Number(qs('#hotelQty').value||4),
+      brand: normalizeText(qs('#hotelBrand').value),
+      size: normalizeText(qs('#hotelSize').value),
+      group: qs('#hotelGroup').value,
+      floor: qs('#hotelFloor').value,
+      corridor: normalizeText(qs('#hotelCorridor').value) || 'A',
+      dot: normalizeText(qs('#hotelDot').value),
+      hotelCode: code,
+      note: String(qs('#hotelNote').value||'').trim(),
+      createdAt: new Date().toLocaleString('tr-TR')
+    };
+    if(!row.customer) return toast('Müşteri gerekli.');
+    if(!row.plate) return toast('Plaka gerekli.');
+    if(row.qty <= 0) return toast('Geçerli adet gir.');
+
+    if(editingHotelId){
+      const idx = (S.hotels||[]).findIndex(x => String(x.id)===String(editingHotelId));
+      if(idx < 0) return toast('Otel kaydı bulunamadı.');
+      S.hotels[idx] = { ...S.hotels[idx], ...row };
+      saveState();
+      refreshPresetLists();
+      clearHotelForm();
+      renderHotel();
+      toast('Otel kaydı güncellendi');
+      return;
+    }
+
+    S.hotels.unshift(row);
+    saveState();
+    refreshPresetLists();
+    clearHotelForm();
+    renderHotel();
+    toast('Otel kaydı eklendi');
+  }
+
+  function editHotel(id){
+    const row = (S.hotels||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('Otel kaydı bulunamadı.');
+    editingHotelId = id;
+    qs('#hotelCustomer').value = row.customer || '';
+    qs('#hotelPhone').value = row.phone || '';
+    qs('#hotelPlate').value = row.plate || '';
+    qs('#hotelQty').value = String(Number(row.qty||4));
+    qs('#hotelBrand').value = row.brand || '';
+    qs('#hotelSize').value = row.size || '';
+    qs('#hotelGroup').value = row.group || 'BINEK';
+    qs('#hotelFloor').value = row.floor || 'Kat1';
+    qs('#hotelCorridor').value = row.corridor || 'A';
+    qs('#hotelDot').value = row.dot || '';
+    qs('#hotelCode').value = row.hotelCode || '';
+    qs('#hotelNote').value = row.note || '';
+    qs('#cancelHotelEditBtn').classList.remove('hidden');
+    openScreen('hotel');
+    qs('#hotelCustomer').scrollIntoView({behavior:'smooth', block:'start'});
+    toast('Otel kaydı düzenlemeye açıldı');
+  }
+
+  function deleteHotel(id){
+    const row = (S.hotels||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('Otel kaydı bulunamadı.');
+    if(!confirm('Otel kaydı silinsin mi?')) return;
+    S.hotels = (S.hotels||[]).filter(x => String(x.id)!==String(id));
+    saveState();
+    if(String(editingHotelId)===String(id)) clearHotelForm();
+    renderHotel();
+    toast('Otel kaydı silindi');
+  }
+
+  function renderHotel(){
+    const q = normalizeText(qs('#hotelSearch')?.value);
+    const rows = (S.hotels||[])
+      .filter(r => !q || [r.customer,r.plate,r.hotelCode,r.floor,r.corridor,r.brand,r.size].join(' ').toUpperCase().includes(q))
+      .sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt),'tr'));
+
+    const box = qs('#hotelList');
+    if(!box) return;
+    qs('#hotelSummaryBadge').textContent = `${rows.length} kayıt`;
+    box.innerHTML = rows.length ? rows.map(r => `<div class="item">
+      <div class="title">${esc(r.customer||'-')} • ${esc(r.plate||'-')}</div>
+      <div class="money">${esc(r.hotelCode||'-')}</div>
+      <div class="meta">${esc(r.group||'-')} • ${Number(r.qty||0)} adet • ${esc(r.floor||'-')}/${esc(r.corridor||'-')}</div>
+      <div class="small">${esc(r.brand||'-')} ${esc(r.size||'')}${r.dot ? ` • DOT ${esc(r.dot)}` : ''}${r.note ? ` • ${esc(r.note)}` : ''}</div>
+      <div class="actions" style="grid-template-columns:1fr 1fr 1fr">
+        <button class="btn violet" type="button" data-hotel-action="label" data-id="${r.id}">Etiket</button>
+        <button class="btn green" type="button" data-hotel-action="edit" data-id="${r.id}">Düzelt</button>
+        <button class="btn red" type="button" data-hotel-action="delete" data-id="${r.id}">Sil</button>
+      </div>
+    </div>`).join('') : '<div class="item">Otel kaydı yok.</div>';
+
+    box.querySelectorAll('[data-hotel-action]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const action = btn.getAttribute('data-hotel-action');
+        const id = btn.getAttribute('data-id');
+        if(action === 'label') openHotelLabelById(id);
+        if(action === 'edit') editHotel(id);
+        if(action === 'delete') deleteHotel(id);
+      };
+    });
+  }
+
+  function clearExpenseForm(){
+    editingExpenseId = null;
+    if(qs('#expenseDate')) qs('#expenseDate').value = today();
+    if(qs('#expenseType')) qs('#expenseType').value = 'YEMEK';
+    if(qs('#expenseAmount')) qs('#expenseAmount').value = '';
+    if(qs('#expenseNote')) qs('#expenseNote').value = '';
+    if(qs('#cancelExpenseEditBtn')) qs('#cancelExpenseEditBtn').classList.add('hidden');
+  }
+
+  function saveExpense(){
+    const row = {
+      id: editingExpenseId || uid(),
+      date: qs('#expenseDate').value || today(),
+      type: qs('#expenseType').value,
+      amount: Number(qs('#expenseAmount').value||0),
+      note: qs('#expenseNote').value.trim(),
+      createdAt: new Date().toLocaleString('tr-TR')
+    };
+    if(row.amount <= 0) return toast('Geçerli gider tutarı gir.');
+    if(editingExpenseId){
+      const idx = (S.expenses||[]).findIndex(x => String(x.id)===String(editingExpenseId));
+      if(idx < 0) return toast('Gider kaydı bulunamadı.');
+      S.expenses[idx] = {...S.expenses[idx], ...row};
+      saveState();
+      clearExpenseForm();
+      renderHome();
+      renderExpenses();
+      toast('Gider güncellendi');
+      return;
+    }
+    S.expenses.unshift(row);
+    saveState();
+    clearExpenseForm();
+    renderHome();
+    renderExpenses();
+    toast('Gider kaydedildi');
+  }
+
+  function editExpense(id){
+    const row = (S.expenses||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('Gider kaydı bulunamadı.');
+    editingExpenseId = id;
+    qs('#expenseDate').value = row.date || today();
+    qs('#expenseType').value = row.type || 'DIGER';
+    qs('#expenseAmount').value = String(Number(row.amount||0));
+    qs('#expenseNote').value = row.note || '';
+    qs('#cancelExpenseEditBtn').classList.remove('hidden');
+    openScreen('expenses');
+    qs('#expenseDate').scrollIntoView({behavior:'smooth', block:'start'});
+    toast('Gider düzenlemeye açıldı');
+  }
+
+  function deleteExpense(id){
+    const row = (S.expenses||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('Gider kaydı bulunamadı.');
+    if(!confirm('Gider kaydı silinsin mi?')) return;
+    S.expenses = (S.expenses||[]).filter(x => String(x.id)!==String(id));
+    saveState();
+    if(String(editingExpenseId)===String(id)) clearExpenseForm();
+    renderHome();
+    renderExpenses();
+    toast('Gider silindi');
+  }
+
+  function renderExpenses(){
+    const q = normalizeText(qs('#expensesSearch')?.value);
+    const rows = (S.expenses||[])
+      .filter(r => !q || [r.type,r.note].join(' ').toUpperCase().includes(q))
+      .sort((a,b)=>String(b.date+' '+b.createdAt).localeCompare(String(a.date+' '+a.createdAt),'tr'));
+
+    const box = qs('#expensesHistoryList');
+    if(!box) return;
+    qs('#expensesSummaryBadge').textContent = `${rows.length} kayıt`;
+    box.innerHTML = rows.length ? rows.map(r => `<div class="item">
+      <div class="title">${esc(r.type||'Gider')}</div>
+      <div class="money">${money(r.amount||0)}</div>
+      <div class="meta">${esc(r.date)} • ${esc(r.createdAt||'-')}</div>
+      <div class="small">${esc(r.note||'')}</div>
+      <div class="actions">
+        <button class="btn green" type="button" data-expense-action="edit" data-id="${r.id}">Düzelt</button>
+        <button class="btn red" type="button" data-expense-action="delete" data-id="${r.id}">Sil</button>
+      </div>
+    </div>`).join('') : '<div class="item">Gider kaydı yok.</div>';
+
+    box.querySelectorAll('[data-expense-action]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const action = btn.getAttribute('data-expense-action');
+        const id = btn.getAttribute('data-id');
+        if(action === 'edit') editExpense(id);
+        if(action === 'delete') deleteExpense(id);
+      };
+    });
+  }
+
+  let stockCameraStream = null;
+  let stockCameraTimer = null;
+  let stockBarcodeDetector = null;
+
+  function normalizeBarcode(v){ return String(v||'').trim(); }
+
+  function currentStockBarcodePayload(){
+    return {
+      barcode: normalizeBarcode(qs('#stockScanBarcode').value || qs('#stockBarcode').value),
+      season: qs('#stockSeason').value,
+      brand: normalizeText(qs('#stockBrand').value),
+      size: normalizeText(qs('#stockSize').value),
+      pattern: normalizeText(qs('#stockPattern').value)
+    };
+  }
+
+  function saveBarcodeDefinitionIfPossible(){
+    const p = currentStockBarcodePayload();
+    if(!p.barcode || !p.brand || !p.size) return;
+    if(!S.barcodeDefs || typeof S.barcodeDefs !== 'object') S.barcodeDefs = {};
+    S.barcodeDefs[p.barcode] = {
+      barcode: p.barcode,
+      season: p.season,
+      brand: p.brand,
+      size: p.size,
+      pattern: p.pattern || '',
+      updatedAt: new Date().toLocaleString('tr-TR')
+    };
+  }
+
+  function fillFromBarcodeDefinition(barcode){
+    if(!barcode || !S.barcodeDefs || !S.barcodeDefs[barcode]) return false;
+    const d = S.barcodeDefs[barcode];
+    qs('#stockSeason').value = d.season || 'YAZLIK';
+    qs('#stockBrand').value = d.brand || '';
+    qs('#stockSize').value = d.size || '';
+    qs('#stockPattern').value = d.pattern || '';
+    qs('#stockBarcode').value = d.barcode || '';
+    qs('#stockScanInfo').value = [d.brand,d.size,d.pattern].filter(Boolean).join(' • ');
+    return true;
+  }
+
+  function renderStockBarcodeInfo(){
+    const barcode = normalizeBarcode(qs('#stockScanBarcode').value);
+    if(!barcode){
+      qs('#stockScanInfo').value = '';
+      return;
+    }
+    const d = S.barcodeDefs && S.barcodeDefs[barcode];
+    qs('#stockScanInfo').value = d ? [d.brand,d.size,d.pattern].filter(Boolean).join(' • ') : 'Yeni barkod • ilk tanımı gir';
+  }
+
+  function loadBarcodeIntoStock(){
+    const barcode = normalizeBarcode(qs('#stockScanBarcode').value);
+    if(!barcode) return toast('Önce barkod okut / yaz.');
+    qs('#stockBarcode').value = barcode;
+    if(fillFromBarcodeDefinition(barcode)){
+      toast('Barkod tanımı yüklendi');
+    }else{
+      qs('#stockScanInfo').value = 'Yeni barkod • ürün bilgilerini gir';
+      toast('Yeni barkod. Marka / ebat / desen girip stoğa ekle.');
+    }
+  }
+
+  async function ensureStockBarcodeDetector(){
+    if('BarcodeDetector' in window){
+      try{
+        if(!stockBarcodeDetector){
+          const formats = await window.BarcodeDetector.getSupportedFormats();
+          const preferred = ['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','codabar'];
+          const supported = preferred.filter(f => formats.includes(f));
+          stockBarcodeDetector = new window.BarcodeDetector({formats: supported.length ? supported : formats});
+        }
+        return stockBarcodeDetector;
+      }catch(e){ return null; }
+    }
+    return null;
+  }
+
+  function setStockCameraStatus(msg){
+    if(qs('#stockCameraStatus')) qs('#stockCameraStatus').textContent = msg;
+  }
+
+  async function startStockCameraScan(){
+    try{
+      if(stockCameraStream) stopStockCameraScan(false);
+      const detector = await ensureStockBarcodeDetector();
+      if(!detector){
+        toast('Bu tarayıcıda barkod kamera desteği yok');
+        setStockCameraStatus('Destek yok');
+        return;
+      }
+      const video = qs('#stockCameraVideo');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal:'environment' }, width:{ideal:1280}, height:{ideal:720} },
+        audio: false
+      });
+      stockCameraStream = stream;
+      video.srcObject = stream;
+      await video.play();
+      qs('#stockCameraWrap').classList.remove('hidden');
+      qs('#startStockCameraBtn').classList.add('hidden');
+      qs('#stopStockCameraBtn').classList.remove('hidden');
+      setStockCameraStatus('Kamera açık • barkod aranıyor');
+      stockCameraTimer = setInterval(async ()=>{
+        try{
+          if(video.readyState < 2) return;
+          const codes = await detector.detect(video);
+          if(codes && codes.length){
+            const raw = String(codes[0].rawValue || '').trim();
+            if(raw){
+              qs('#stockScanBarcode').value = raw;
+              renderStockBarcodeInfo();
+              loadBarcodeIntoStock();
+              stopStockCameraScan(false);
+              toast('Barkod okundu');
+            }
+          }
+        }catch(e){}
+      }, 500);
+    }catch(err){
+      setStockCameraStatus('Kamera açılamadı');
+      toast('Kamera izni veya erişimi başarısız');
+    }
+  }
+
+  function stopStockCameraScan(showToast=true){
+    if(stockCameraTimer){
+      clearInterval(stockCameraTimer);
+      stockCameraTimer = null;
+    }
+    if(stockCameraStream){
+      stockCameraStream.getTracks().forEach(t=>t.stop());
+      stockCameraStream = null;
+    }
+    const video = qs('#stockCameraVideo');
+    if(video) video.srcObject = null;
+    qs('#stockCameraWrap').classList.add('hidden');
+    qs('#startStockCameraBtn').classList.remove('hidden');
+    qs('#stopStockCameraBtn').classList.add('hidden');
+    setStockCameraStatus('Kamera kapalı');
+    if(showToast) toast('Kamera kapatıldı');
+  }
+
+
+  function clearSaleForm(){
+    ['#saleCustomer','#salePlate','#saleFirmInput','#saleManualTitle','#saleManualQty','#saleManualUnitPrice','#saleManualTotal','#saleStockQty','#saleStockUnitPrice','#saleStockTotal'].forEach(s=>{ if(qs(s)) qs(s).value=''; });
+    if(qs('#saleDate')) qs('#saleDate').value = today();
+    if(qs('#salePaymentType')) qs('#salePaymentType').value = 'NAKIT';
+    updateSalePaymentUI();
+    fillSaleStockCardSelect();
+    renderSaleCart();
+  }
+
+  function updateSalePaymentUI(){
+    const paymentType = qs('#salePaymentType').value;
+    const isVeresiye = paymentType === 'VERESIYE';
+    qs('#saleFirmInput').disabled = !isVeresiye;
+    qs('#addFirmFromSaleBtn').disabled = !isVeresiye;
+    if(!isVeresiye){
+      qs('#saleFirmInput').value = '';
+    }
+  }
+
+  function fillSaleStockCardSelect(){
+    const sel = qs('#saleStockCard');
+    if(!sel) return;
+    const rows = (S.stock||[]).filter(x => Number(x.qty||0) > 0).sort((a,b)=>`${a.brand} ${a.size}`.localeCompare(`${b.brand} ${b.size}`,'tr'));
+    sel.innerHTML = '<option value="">Stok kartı seç</option>' + rows.map(x => `<option value="${x.id}">${x.season} • ${esc(x.brand)} • ${esc(x.size)} • ${Number(x.qty||0)} adet</option>`).join('');
+    fillSaleStockBatchSelect();
+  }
+
+  function fillSaleStockBatchSelect(){
+    const batchSel = qs('#saleStockBatch');
+    const cardId = qs('#saleStockCard').value;
+    if(!batchSel) return;
+    if(!cardId){
+      batchSel.innerHTML = '<option value="">DOT seç</option>';
+      if(qs('#saleStockInfo')) qs('#saleStockInfo').textContent = 'Kart ve DOT seçince bilgi burada görünür.';
+      return;
+    }
+    const card = (S.stock||[]).find(x => String(x.id)===String(cardId));
+    const batches = (card?.batches||[]).filter(b => Number(b.qty||0) > 0);
+    batchSel.innerHTML = '<option value="">DOT seç</option>' + batches.map(b => `<option value="${b.id}">DOT ${esc(b.dot||'-')} • ${Number(b.qty||0)} adet • ${esc(b.floor||'-')}/${esc(b.corridor||'-')}</option>`).join('');
+    updateSaleStockInfo();
+  }
+
+  function updateSaleStockInfo(){
+    const cardId = qs('#saleStockCard').value;
+    const batchId = qs('#saleStockBatch').value;
+    const info = qs('#saleStockInfo');
+    const card = (S.stock||[]).find(x => String(x.id)===String(cardId));
+    const batch = (card?.batches||[]).find(b => String(b.id)===String(batchId));
+    if(!card){
+      info.textContent = 'Kart ve DOT seçince bilgi burada görünür.';
+      return;
+    }
+    if(!batch){
+      info.textContent = `${card.season} • ${card.brand} • ${card.size} • toplam ${card.qty||0} adet`;
+      return;
+    }
+    qs('#saleStockUnitPrice').value = String(Number(batch.salePrice||card.salePrice||0));
+    info.textContent = `${card.brand} ${card.size} • DOT ${batch.dot||'-'} • ${batch.qty||0} adet • Alış ${money(batch.buyPrice||0)} • Satış ${money(batch.salePrice||card.salePrice||0)}`;
+    calcSaleStockTotal();
+  }
+
+  function calcSaleStockTotal(){
+    const qty = Number(qs('#saleStockQty').value||0);
+    const unit = Number(qs('#saleStockUnitPrice').value||0);
+    qs('#saleStockTotal').value = qty > 0 ? String(qty * unit) : '';
+  }
+
+  function calcSaleManualTotal(){
+    const qty = Number(qs('#saleManualQty').value||0);
+    const unit = Number(qs('#saleManualUnitPrice').value||0);
+    qs('#saleManualTotal').value = qty > 0 ? String(qty * unit) : '';
+  }
+
+  function addStockSaleLine(){
+    const cardId = qs('#saleStockCard').value;
+    const batchId = qs('#saleStockBatch').value;
+    const qty = Number(qs('#saleStockQty').value||0);
+    const unitPrice = Number(qs('#saleStockUnitPrice').value||0);
+    const card = (S.stock||[]).find(x => String(x.id)===String(cardId));
+    const batch = (card?.batches||[]).find(b => String(b.id)===String(batchId));
+    if(!card) return toast('Stok kartı seç.');
+    if(!batch) return toast('DOT seç.');
+    if(qty <= 0) return toast('Geçerli adet gir.');
+    if(qty > Number(batch.qty||0)) return toast('Seçili DOT stoğundan fazla satış yapamazsın.');
+    saleCart.push({
+      id: uid(),
+      kind: 'STOCK',
+      stockId: card.id,
+      batchId: batch.id,
+      title: `${card.brand} ${card.size} DOT ${batch.dot||'-'}`,
+      qty,
+      unitPrice,
+      total: qty * unitPrice,
+      buyPrice: Number(batch.buyPrice||0),
+      profit: (unitPrice - Number(batch.buyPrice||0)) * qty,
+      firm: '',
+      meta: {
+        brand: card.brand,
+        size: card.size,
+        dot: batch.dot||'',
+        floor: batch.floor||'',
+        corridor: batch.corridor||'',
+        barcode: batch.barcode||''
+      }
+    });
+    qs('#saleStockQty').value='';
+    qs('#saleStockTotal').value='';
+    renderSaleCart();
+    toast('Stok kalemi sepete eklendi');
+  }
+
+  function addManualSaleLine(){
+    const title = normalizeText(qs('#saleManualTitle').value);
+    const qty = Number(qs('#saleManualQty').value||0);
+    const unitPrice = Number(qs('#saleManualUnitPrice').value||0);
+    if(!title) return toast('Açıklama gir.');
+    if(qty <= 0) return toast('Geçerli miktar gir.');
+    if(unitPrice < 0) return toast('Geçerli fiyat gir.');
+    saleCart.push({
+      id: uid(),
+      kind: 'MANUAL',
+      title,
+      qty,
+      unitPrice,
+      total: qty * unitPrice,
+      buyPrice: 0,
+      profit: qty * unitPrice
+    });
+    qs('#saleManualTitle').value='';
+    qs('#saleManualQty').value='';
+    qs('#saleManualUnitPrice').value='';
+    qs('#saleManualTotal').value='';
+    renderSaleCart();
+    toast('Hizmet kalemi sepete eklendi');
+  }
+
+  function removeSaleCartLine(id){
+    saleCart = saleCart.filter(x => String(x.id)!==String(id));
+    renderSaleCart();
+  }
+
+  function clearSaleCart(){
+    saleCart = [];
+    renderSaleCart();
+  }
+
+  function renderSaleCart(){
+    const box = qs('#saleCartList');
+    const total = saleCart.reduce((s,x)=>s+Number(x.total||0),0);
+    const profit = saleCart.reduce((s,x)=>s+Number(x.profit||0),0);
+    qs('#saleCartTotal').textContent = money(total);
+    qs('#saleCartProfit').textContent = money(profit);
+    qs('#saleCartCount').textContent = String(saleCart.length);
+    if(!box) return;
+    box.innerHTML = saleCart.length ? saleCart.map(x => `<div class="item">
+      <div class="title">${esc(x.title||'-')}</div>
+      <div class="money">${money(x.total||0)}</div>
+      <div class="meta">Miktar: ${x.qty||0} • Birim: ${money(x.unitPrice||0)}${x.kind==='STOCK' ? ` • Alış: ${money(x.buyPrice||0)} • DOT ${esc(x.meta?.dot||'-')}` : ''}</div>
+      <div class="small">Tahmini Kar: ${money(x.profit||0)}</div>
+      <div class="actions" style="grid-template-columns:1fr">
+        <button class="btn red" type="button" data-sale-remove="${x.id}">Kalemi Sil</button>
+      </div>
+    </div>`).join('') : '<div class="item">Sepet boş.</div>';
+    box.querySelectorAll('[data-sale-remove]').forEach(btn=>{
+      btn.onclick = ()=> removeSaleCartLine(btn.getAttribute('data-sale-remove'));
+    });
+  }
+
+  function saveSale(){
+    if(!saleCart.length) return toast('Sepet boş.');
+    const payment = qs('#salePaymentType').value;
+    const firm = normalizeText(qs('#saleFirmInput').value);
+    if(payment === 'VERESIYE' && !firm) return toast('Veresiye için firma gir.');
+    if(payment === 'VERESIYE' && firm && !S.firms.includes(firm)) {
+      S.firms.push(firm);
+      S.firms.sort((a,b)=>a.localeCompare(b,'tr'));
+    }
+
+    const baseDate = qs('#saleDate').value || today();
+    const customer = normalizeText(qs('#saleCustomer').value);
+    const plate = normalizeText(qs('#salePlate').value);
+    let totalSale = 0;
+    const wasEditing = !!editingIncomeId;
+
+    if(editingIncomeId){
+      const old = (S.income||[]).find(x => String(x.id)===String(editingIncomeId));
+      if(!old) return toast('Düzenlenecek gelir kaydı bulunamadı.');
+      restoreStockForIncomeRow(old);
+      removeReceivableLinkedToIncome(editingIncomeId);
+      S.income = (S.income||[]).filter(x => String(x.id)!==String(editingIncomeId));
+    }
+
+    saleCart.forEach(line=>{
+      const incomeRow = {
+        id: editingIncomeId || uid(),
+        firm: payment === 'VERESIYE' ? firm : '',
+        payment,
+        category: line.kind === 'STOCK' ? 'YENI_LASTIK' : 'HIZMET',
+        title: line.title,
+        amount: Number(line.total||0),
+        date: baseDate,
+        customer,
+        plate,
+        note: '',
+        qty: Number(line.qty||0),
+        unitPrice: Number(line.unitPrice||0),
+        createdAt: new Date().toLocaleString('tr-TR'),
+        stockId: line.stockId || '',
+        usedBatchId: line.batchId || '',
+        usedDot: line.meta?.dot || '',
+        usedQty: Number(line.qty||0),
+        buyPrice: Number(line.buyPrice||0)
+      };
+      S.income.unshift(incomeRow);
+      totalSale += Number(line.total||0);
+
+      if(line.kind === 'STOCK'){
+        const card = (S.stock||[]).find(x => String(x.id)===String(line.stockId));
+        const batch = (card?.batches||[]).find(b => String(b.id)===String(line.batchId));
+        if(card && batch){
+          batch.qty = Number(batch.qty||0) - Number(line.qty||0);
+          if(batch.qty < 0) batch.qty = 0;
+          rebuildStockCard(card);
+        }
+      }
+
+      if(payment === 'VERESIYE'){
+        S.receivables.unshift({
+          id: uid(),
+          linkIncomeId: incomeRow.id,
+          firm,
+          type: 'BORC',
+          amount: Number(incomeRow.amount||0),
+          date: baseDate,
+          customer,
+          plate,
+          note: incomeRow.title || 'Satış',
+          createdAt: new Date().toLocaleString('tr-TR')
+        });
+      }
+    });
+
+    S.stock = (S.stock||[]).filter(card => Number(card.qty||0) > 0);
+    saveState();
+    editingIncomeId = null;
+    saleCart = [];
+    qs('#clearSaleFormBtn').textContent = 'Formu Temizle';
+    clearSaleForm();
+    renderHome();
+    renderReceivables();
+    renderStock();
+    fillSaleStockCardSelect();
+    renderSalesHistory();
+    toast(wasEditing ? `Gelir güncellendi • ${money(totalSale)}` : `Satış kaydedildi • ${money(totalSale)}`);
+  }
+
+
+  function restoreStockForIncomeRow(row){
+    if(row.category !== 'YENI_LASTIK' || !row.stockId || !row.usedBatchId) return;
+    const card = (S.stock||[]).find(x => String(x.id)===String(row.stockId));
+    if(card){
+      const batch = (card.batches||[]).find(b => String(b.id)===String(row.usedBatchId));
+      if(batch){
+        batch.qty = Number(batch.qty || 0) + Number(row.usedQty || row.qty || 0);
+        rebuildStockCard(card);
+      }
+    }
+  }
+
+  function removeReceivableLinkedToIncome(id){
+    S.receivables = (S.receivables||[]).filter(x => String(x.linkIncomeId||'') !== String(id));
+  }
+
+  function editIncome(id){
+    const row = (S.income||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('Gelir kaydı bulunamadı.');
+    editingIncomeId = id;
+    openScreen('sales');
+    qs('#saleDate').value = row.date || today();
+    qs('#saleCustomer').value = row.customer || '';
+    qs('#salePlate').value = row.plate || '';
+    qs('#salePaymentType').value = row.payment || 'NAKIT';
+    qs('#saleFirmInput').value = row.firm || '';
+    updateSalePaymentUI();
+
+    saleCart = [{
+      id: uid(),
+      kind: row.category === 'YENI_LASTIK' ? 'STOCK' : 'MANUAL',
+      stockId: row.stockId || '',
+      batchId: row.usedBatchId || '',
+      title: row.title || '',
+      qty: Number(row.qty || 1),
+      unitPrice: Number(row.unitPrice || row.amount || 0),
+      total: Number(row.amount || 0),
+      buyPrice: Number(row.buyPrice || 0),
+      profit: Number(row.amount || 0) - (Number(row.buyPrice || 0) * Number(row.qty || 1)),
+      meta: { dot: row.usedDot || '' }
+    }];
+    renderSaleCart();
+    qs('#clearSaleFormBtn').textContent = 'Düzeltmeyi İptal Et';
+    toast('Gelir kaydı düzenlemeye açıldı');
+  }
+
+  function clearIncomeEdit(){
+    editingIncomeId = null;
+    qs('#clearSaleFormBtn').textContent = 'Formu Temizle';
+    saleCart = [];
+    clearSaleForm();
+  }
+
+  function deleteIncome(id){
+    const row = (S.income||[]).find(x => String(x.id)===String(id));
+    if(!row) return toast('Gelir kaydı bulunamadı.');
+    if(!confirm('Gelir kaydı silinsin mi?')) return;
+    restoreStockForIncomeRow(row);
+    removeReceivableLinkedToIncome(id);
+    S.income = (S.income||[]).filter(x => String(x.id)!==String(id));
+    if(String(editingIncomeId)===String(id)) clearIncomeEdit();
+    saveState();
+    renderHome();
+    renderReceivables();
+    renderStock();
+    fillSaleStockCardSelect();
+    renderSalesHistory();
+    toast('Gelir kaydı silindi');
+  }
+
+  function renderSalesHistory(){
+    const q = normalizeText(qs('#salesSearch')?.value);
+    const rows = (S.income||[])
+      .filter(r => !q || [r.title,r.customer,r.plate,r.firm,r.category].join(' ').toUpperCase().includes(q))
+      .sort((a,b)=>String(b.date+' '+b.createdAt).localeCompare(String(a.date+' '+a.createdAt),'tr'));
+    const box = qs('#salesHistoryList');
+    if(!box) return;
+    qs('#salesSummaryBadge').textContent = `${rows.length} kayıt`;
+    box.innerHTML = rows.length ? rows.map(r => `<div class="item">
+      <div class="title">${esc(r.title||'-')}</div>
+      <div class="money">${money(r.amount||0)}</div>
+      <div class="meta">${esc(r.date)} • ${esc(r.payment||'-')}${r.customer ? ` • ${esc(r.customer)}` : ''}${r.plate ? ` • ${esc(r.plate)}` : ''}${r.firm ? ` • ${esc(r.firm)}` : ''}</div>
+      <div class="small">${esc(r.category||'-')}${r.usedDot ? ` • DOT ${esc(r.usedDot)}` : ''}${r.qty ? ` • ${r.qty} adet` : ''}</div>
+      <div class="actions">
+        <button class="btn green" type="button" data-income-action="edit" data-id="${r.id}">Düzelt</button>
+        <button class="btn red" type="button" data-income-action="delete" data-id="${r.id}">Sil</button>
+      </div>
+    </div>`).join('') : '<div class="item">Gelir kaydı yok.</div>';
+
+    box.querySelectorAll('[data-income-action]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const action = btn.getAttribute('data-income-action');
+        const id = btn.getAttribute('data-id');
+        if(action === 'edit') editIncome(id);
+        if(action === 'delete') deleteIncome(id);
+      };
+    });
+  }
+
+  function clearStockForm(){
+    editingStockId = null;
+    editingBatchId = null;
+    ['#stockBrand','#stockSize','#stockPattern','#stockDot','#stockQty','#stockBuyPrice','#stockSalePrice','#stockBarcode','#stockScanBarcode','#stockFloor','#stockCorridor','#stockNote'].forEach(s=>qs(s).value='');
+    qs('#stockScanInfo').value='';
+    qs('#stockSeason').value = 'YAZLIK';
+    qs('#cancelStockEditBtn').classList.add('hidden');
+  }
+
+  function getStockKey(row){
+    return `${normalizeText(row.brand)}__${normalizeText(row.size)}__${normalizeText(row.season)}`;
+  }
+
+  function rebuildStockCard(card){
+    card.batches = (card.batches||[]).filter(b => Number(b.qty||0) > 0);
+    card.qty = card.batches.reduce((s,b)=>s + Number(b.qty||0), 0);
+    if(card.batches.length){
+      const latestSale = [...card.batches].reverse().find(b => Number(b.salePrice||0) > 0);
+      if(latestSale) card.salePrice = Number(latestSale.salePrice||0);
+    }
+  }
+
+  function saveStock(){
+    const payload = {
+      season: qs('#stockSeason').value,
+      brand: normalizeText(qs('#stockBrand').value),
+      size: normalizeText(qs('#stockSize').value),
+      pattern: normalizeText(qs('#stockPattern').value),
+      dot: normalizeText(qs('#stockDot').value),
+      qty: Number(qs('#stockQty').value||0),
+      buyPrice: Number(qs('#stockBuyPrice').value||0),
+      salePrice: Number(qs('#stockSalePrice').value||0),
+      barcode: normalizeText(qs('#stockBarcode').value),
+      floor: normalizeText(qs('#stockFloor').value),
+      corridor: normalizeText(qs('#stockCorridor').value),
+      note: qs('#stockNote').value.trim()
+    };
+    if(!payload.brand || !payload.size) return toast('Marka ve ebat gerekli.');
+    if(!payload.dot) return toast('DOT gerekli.');
+    if(payload.qty <= 0) return toast('Geçerli adet gir.');
+
+    if(editingStockId && editingBatchId){
+      const card = (S.stock||[]).find(x => String(x.id)===String(editingStockId));
+      if(!card) return toast('Stok kartı bulunamadı.');
+      const batchIdx = (card.batches||[]).findIndex(b => String(b.id)===String(editingBatchId));
+      if(batchIdx < 0) return toast('DOT partisi bulunamadı.');
+      card.season = payload.season;
+      card.brand = payload.brand;
+      card.size = payload.size;
+      card.salePrice = payload.salePrice;
+      card.note = payload.note;
+      card.batches[batchIdx] = {
+        ...card.batches[batchIdx],
+        pattern: payload.pattern,
+        dot: payload.dot,
+        qty: payload.qty,
+        buyPrice: payload.buyPrice,
+        salePrice: payload.salePrice,
+        barcode: payload.barcode,
+        floor: payload.floor,
+        corridor: payload.corridor,
+        note: payload.note
+      };
+      rebuildStockCard(card);
+      saveBarcodeDefinitionIfPossible();
+      saveState();
+      refreshPresetLists();
+      clearStockForm();
+      renderHome();
+      renderStock();
+      fillSaleStockCardSelect();
+      toast('DOT partisi güncellendi');
+      return;
+    }
+
+    const key = getStockKey(payload);
+    let card = (S.stock||[]).find(x => getStockKey(x) === key);
+    if(!card){
+      card = {
+        id: uid(),
+        season: payload.season,
+        brand: payload.brand,
+        size: payload.size,
+        salePrice: payload.salePrice,
+        note: payload.note,
+        qty: 0,
+        batches: []
+      };
+      S.stock.unshift(card);
+    }
+    card.salePrice = payload.salePrice || card.salePrice || 0;
+    card.note = payload.note || card.note || '';
+    card.batches.push({
+      id: uid(),
+      pattern: payload.pattern,
+      dot: payload.dot,
+      qty: payload.qty,
+      buyPrice: payload.buyPrice,
+      salePrice: payload.salePrice,
+      barcode: payload.barcode,
+      floor: payload.floor,
+      corridor: payload.corridor,
+      note: payload.note,
+      createdAt: new Date().toLocaleString('tr-TR')
+    });
+    rebuildStockCard(card);
+    saveState();
+    clearStockForm();
+    renderHome();
+    renderStock();
+    fillSaleStockCardSelect();
+    toast('Stok eklendi');
+  }
+
+  function editStockBatch(stockId, batchId){
+    const card = (S.stock||[]).find(x => String(x.id)===String(stockId));
+    if(!card) return toast('Stok kartı bulunamadı.');
+    const batch = (card.batches||[]).find(b => String(b.id)===String(batchId));
+    if(!batch) return toast('DOT partisi bulunamadı.');
+    editingStockId = stockId;
+    editingBatchId = batchId;
+    qs('#stockSeason').value = card.season || 'YAZLIK';
+    qs('#stockBrand').value = card.brand || '';
+    qs('#stockSize').value = card.size || '';
+    qs('#stockPattern').value = batch.pattern || '';
+    qs('#stockDot').value = batch.dot || '';
+    qs('#stockQty').value = String(Number(batch.qty||0));
+    qs('#stockBuyPrice').value = String(Number(batch.buyPrice||0));
+    qs('#stockSalePrice').value = String(Number(batch.salePrice||card.salePrice||0));
+    qs('#stockBarcode').value = batch.barcode || '';
+    qs('#stockFloor').value = batch.floor || '';
+    qs('#stockCorridor').value = batch.corridor || '';
+    qs('#stockNote').value = batch.note || card.note || '';
+    qs('#cancelStockEditBtn').classList.remove('hidden');
+    openScreen('stock');
+    qs('#stockBrand').scrollIntoView({behavior:'smooth', block:'start'});
+    toast('DOT partisi düzenlemeye açıldı');
+  }
+
+  function deleteStockBatch(stockId, batchId){
+    const card = (S.stock||[]).find(x => String(x.id)===String(stockId));
+    if(!card) return toast('Stok kartı bulunamadı.');
+    const batch = (card.batches||[]).find(b => String(b.id)===String(batchId));
+    if(!batch) return toast('DOT partisi bulunamadı.');
+    if(!confirm(`DOT ${batch.dot} silinsin mi?`)) return;
+    card.batches = (card.batches||[]).filter(b => String(b.id)!==String(batchId));
+    rebuildStockCard(card);
+    S.stock = (S.stock||[]).filter(x => !(String(x.id)===String(stockId) && Number(x.qty||0)===0));
+    saveState();
+    renderHome();
+    renderStock();
+    fillSaleStockCardSelect();
+    toast('DOT partisi silindi');
+  }
+
+  function adjustStockBatchQty(stockId, batchId, delta){
+    const card = (S.stock||[]).find(x => String(x.id)===String(stockId));
+    if(!card) return toast('Stok kartı bulunamadı.');
+    const batch = (card.batches||[]).find(b => String(b.id)===String(batchId));
+    if(!batch) return toast('DOT partisi bulunamadı.');
+    const newQty = Number(batch.qty||0) + Number(delta||0);
+    if(newQty < 0) return toast('Adet 0 altına düşemez.');
+    batch.qty = newQty;
+    rebuildStockCard(card);
+    S.stock = (S.stock||[]).filter(x => !(String(x.id)===String(stockId) && Number(x.qty||0)===0));
+    saveState();
+    renderHome();
+    renderStock();
+    fillSaleStockCardSelect();
+    toast('Adet güncellendi');
+  }
+
+  function renderStock(){
+    const q = normalizeText(qs('#stockSearch').value);
+    const rows = (S.stock||[])
+      .filter(x => !q || [x.brand,x.size,x.season,x.note,(x.batches||[]).map(b=>[b.dot,b.pattern,b.barcode].join(' ')).join(' ')].join(' ').includes(q))
+      .sort((a,b)=>`${a.brand} ${a.size}`.localeCompare(`${b.brand} ${b.size}`,'tr'));
+
+    const totalQty = rows.reduce((s,x)=>s+Number(x.qty||0),0);
+    qs('#stockSummaryBadge').textContent = `${rows.length} kart • ${totalQty} adet`;
+
+    const box = qs('#stockList');
+    box.innerHTML = rows.length ? rows.map(card => {
+      const batches = (card.batches||[]).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''),'tr'));
+      const batchHtml = batches.map(b => `<div class="item" style="margin-top:8px">
+        <div class="title">DOT ${esc(b.dot||'-')} • ${Number(b.qty||0)} adet</div>
+        <div class="meta">${esc(b.pattern||'-')}${b.barcode ? ` • Barkod: ${esc(b.barcode)}` : ''}${b.floor || b.corridor ? ` • ${esc(b.floor||'-')}/${esc(b.corridor||'-')}` : ''}</div>
+        <div class="small">Alış: ${money(b.buyPrice||0)}${Number(b.salePrice||0) ? ` • Satış: ${money(b.salePrice||0)}` : ''}${b.note ? ` • ${esc(b.note)}` : ''}</div>
+        <div class="actions" style="grid-template-columns:repeat(4,1fr)">
+          <button class="btn green" type="button" data-stock-act="edit" data-stock-id="${card.id}" data-batch-id="${b.id}">Düzelt</button>
+          <button class="btn gray" type="button" data-stock-act="plus" data-stock-id="${card.id}" data-batch-id="${b.id}">+1</button>
+          <button class="btn violet" type="button" data-stock-act="minus" data-stock-id="${card.id}" data-batch-id="${b.id}">-1</button>
+          <button class="btn red" type="button" data-stock-act="delete" data-stock-id="${card.id}" data-batch-id="${b.id}">Sil</button>
+        </div>
+      </div>`).join('');
+
+      return `<div class="item">
+        <div class="title">${card.season==='KIŞLIK' ? 'KIŞLIK' : 'YAZLIK'} • ${esc(card.brand)} • ${esc(card.size)}</div>
+        <div class="money">${Number(card.qty||0)} adet</div>
+        <div class="meta">Ana Kart • Satış: ${money(card.salePrice||0)}${card.note ? ` • ${esc(card.note)}` : ''}</div>
+        ${batchHtml}
+      </div>`;
+    }).join('') : '<div class="item">Stok kartı yok.</div>';
+
+    box.querySelectorAll('[data-stock-act]').forEach(btn=>{
+      btn.onclick = ()=>{
+        const act = btn.getAttribute('data-stock-act');
+        const stockId = btn.getAttribute('data-stock-id');
+        const batchId = btn.getAttribute('data-batch-id');
+        if(act === 'edit') editStockBatch(stockId, batchId);
+        if(act === 'delete') deleteStockBatch(stockId, batchId);
+        if(act === 'plus') adjustStockBatchQty(stockId, batchId, 1);
+        if(act === 'minus') adjustStockBatchQty(stockId, batchId, -1);
+      };
+    });
+  }
+
+  function renderHome(){
+    const totalIncome = (S.income||[]).reduce((s,x)=>s+Number(x.amount||0),0);
+    const totalExpense = (S.expenses||[]).reduce((s,x)=>s+Number(x.amount||0),0);
+    qs('#homeFirmCount').textContent = String((S.firms||[]).length);
+    qs('#homeReceivable').textContent = money((S.firms||[]).reduce((s,f)=>s+getFirmBalance(f),0));
+    qs('#homeIncomeCount').textContent = String((S.income||[]).length);
+    qs('#homeStockCount').textContent = String((S.stock||[]).reduce((s,x)=>s+Number(x.qty||0),0));
+    qs('#homeExpenseCount').textContent = money(totalExpense);
+    qs('#homeHotelCount').textContent = String((S.hotels||[]).length);
+    qs('#homeNetTotal').textContent = money(totalIncome - totalExpense);
+    renderAutoBackupInfo();
+  }
+
+  function bindEvents(){
+    qs('#addFirmBtn').onclick = ()=>{ addFirm(qs('#firmName').value); qs('#firmName').value=''; };
+    qs('#firmSearch').oninput = renderFirmList;
+    qs('#saveFirmJobBtn').onclick = saveFirmJob;
+    qs('#saveCollectionBtn').onclick = saveCollection;
+    qs('#clearFirmJobBtn').onclick = clearFirmJobForm;
+    qs('#saveFirmJobEditBtn').onclick = saveEditFirmJob;
+    qs('#cancelFirmJobEditBtn').onclick = clearFirmJobEditForm;
+    qs('#deleteFirmJobEditBtn').onclick = ()=>{ if(editingFirmJobId) deleteFirmJob(editingFirmJobId); };
+
+    qs('#saveExpenseBtn').onclick = saveExpense;
+    qs('#clearExpenseBtn').onclick = clearExpenseForm;
+    qs('#cancelExpenseEditBtn').onclick = clearExpenseForm;
+    qs('#expensesSearch').oninput = renderExpenses;
+
+    qs('#saveHotelBtn').onclick = saveHotel;
+    qs('#clearHotelBtn').onclick = clearHotelForm;
+    qs('#cancelHotelEditBtn').onclick = clearHotelForm;
+    qs('#hotelSearch').oninput = renderHotel;
+    qs('#hotelFloor').onchange = updateHotelCodePreview;
+    qs('#hotelCorridor').oninput = updateHotelCodePreview;
+    qs('#bulkHotelLabelsBtn').onclick = openFilteredHotelLabels;
+    qs('#hotelLabelLookupBtn').onclick = openHotelLabelByLookup;
+    qs('#closeLabelModalBtn').onclick = closeLabelPreview;
+    qs('#printLabelBtn').onclick = printLabels;
+    qs('#downloadLabelPngBtn').onclick = downloadLabelPngs;
+    qs('#downloadLabelA4PngBtn').onclick = downloadSingleA4Png;
+    qs('#downloadLabelSvgBtn').onclick = downloadLabelSvgs;
+
+    qs('#saveStockBtn').onclick = saveStock;
+    qs('#clearStockBtn').onclick = clearStockForm;
+    qs('#cancelStockEditBtn').onclick = clearStockForm;
+    qs('#stockSearch').oninput = renderStock;
+    qs('#loadBarcodeBtn').onclick = loadBarcodeIntoStock;
+    qs('#stockScanBarcode').oninput = renderStockBarcodeInfo;
+    qs('#stockScanBarcode').onchange = renderStockBarcodeInfo;
+    qs('#startStockCameraBtn').onclick = startStockCameraScan;
+    qs('#stopStockCameraBtn').onclick = ()=>stopStockCameraScan();
+
+    qs('#saleDate').value = today();
+    qs('#salePaymentType').onchange = updateSalePaymentUI;
+    qs('#addFirmFromSaleBtn').onclick = ()=>{ addFirm(qs('#saleFirmInput').value); qs('#saleFirmInput').value = normalizeText(qs('#saleFirmInput').value); };
+    qs('#saleStockCard').onchange = fillSaleStockBatchSelect;
+    qs('#saleStockBatch').onchange = updateSaleStockInfo;
+    qs('#saleStockQty').oninput = calcSaleStockTotal;
+    qs('#saleStockUnitPrice').oninput = calcSaleStockTotal;
+    qs('#addStockSaleLineBtn').onclick = addStockSaleLine;
+    qs('#saleManualQty').oninput = calcSaleManualTotal;
+    qs('#saleManualUnitPrice').oninput = calcSaleManualTotal;
+    qs('#addManualSaleLineBtn').onclick = addManualSaleLine;
+    qs('#saveSaleBtn').onclick = saveSale;
+    qs('#clearSaleCartBtn').onclick = clearSaleCart;
+    qs('#clearSaleFormBtn').onclick = clearIncomeEdit;
+    qs('#salesSearch').oninput = renderSalesHistory;
+    if(qs('#exportBackupBtn')) qs('#exportBackupBtn').onclick = exportBackup;
+    if(qs('#importBackupBtn')) qs('#importBackupBtn').onclick = openBackupFilePicker();
+    if(qs('#backupFileInput')) qs('#backupFileInput').onchange = async (e)=>{
+      const file = e.target.files && e.target.files[0];
+      await importBackupFromFile(file);
+      e.target.value = '';
+    };
+    qs('#runReportBtn').onclick = runReport;
+    qs('#printReportBtn').onclick = printReport;
+    if(qs('#dayEndReportBtn')) qs('#dayEndReportBtn').onclick = runDayEndReport;
+    if(qs('#dayEndReportBtn')) qs('#dayEndReportBtn').onclick = runDayEndReport;
+
+    qs('#jobDate').value = today();
+    qs('#reportStart').value = today();
+    qs('#reportEnd').value = today();
+    clearExpenseForm();
+    clearHotelForm();
+    clearStockForm();
+    clearSaleForm();
+  }
+
+
+  function printReport(){
+    document.body.classList.add('report-print');
+    setTimeout(()=>{
+      window.print();
+      setTimeout(()=>document.body.classList.remove('report-print'), 300);
+    }, 80);
+  }
+
+  
+
+function aggregateProfit(rows, keyFn){
+  const map = new Map();
+  rows.forEach(x=>{
+    const key = keyFn(x) || '-';
+    const revenue = Number(x.amount||0);
+    const cost = Number(x.buyPrice||0) * Number(x.qty||0);
+    const profit = revenue - cost;
+    const prev = map.get(key) || {key, revenue:0, cost:0, profit:0, qty:0, count:0};
+    prev.revenue += revenue;
+    prev.cost += cost;
+    prev.profit += profit;
+    prev.qty += Number(x.qty||0);
+    prev.count += 1;
+    map.set(key, prev);
+  });
+  return [...map.values()].sort((a,b)=>b.profit-a.profit);
+}
+
+function renderProfitGroupList(targetId, items, label){
+  const box = qs('#' + targetId);
+  if(!box) return;
+  box.innerHTML = items.length ? items.map(x => `
+    <div class="item">
+      <div class="title">${esc(x.key)}</div>
+      <div class="money">${money(x.profit)}</div>
+      <div class="meta">Ciro: ${money(x.revenue)} • Maliyet: ${money(x.cost)} • Adet: ${x.qty}</div>
+      <div class="small">${label}: ${x.count}</div>
+    </div>
+  `).join('') : `<div class="item">${label} verisi yok.</div>`;
+}
+
+function runDayEndReport(){
+  const todayStr = today();
+  const todayIncome = (S.income||[]).filter(x => (x.date||'') === todayStr);
+  const todayExpense = (S.expenses||[]).filter(x => (x.date||'') === todayStr);
+  const todayReceivables = (S.receivables||[]).filter(x => (x.date||'') === todayStr);
+
+  const income = todayIncome.reduce((s,x)=>s+Number(x.amount||0),0);
+  const expense = todayExpense.reduce((s,x)=>s+Number(x.amount||0),0);
+  const cash = todayIncome.filter(x=>x.payment==='NAKIT').reduce((s,x)=>s+Number(x.amount||0),0) + todayReceivables.filter(x=>x.type==='TAHSILAT').reduce((s,x)=>s+Number(x.amount||0),0);
+  const credit = todayIncome.filter(x=>x.payment==='VERESIYE').reduce((s,x)=>s+Number(x.amount||0),0);
+  const tireProfit = todayIncome.filter(x=>x.category==='YENI_LASTIK').reduce((s,x)=>s + (Number(x.amount||0) - (Number(x.buyPrice||0) * Number(x.qty||0))),0);
+  const count = todayIncome.length + todayExpense.length + todayReceivables.filter(x=>x.type==='TAHSILAT').length;
+
+  if(qs('#d_income')) qs('#d_income').textContent = money(income);
+  if(qs('#d_expense')) qs('#d_expense').textContent = money(expense);
+  if(qs('#d_net')) qs('#d_net').textContent = money(income - expense);
+  if(qs('#d_cash')) qs('#d_cash').textContent = money(cash);
+  if(qs('#d_credit')) qs('#d_credit').textContent = money(credit);
+  if(qs('#d_tire_profit')) qs('#d_tire_profit').textContent = money(tireProfit);
+  if(qs('#d_count')) qs('#d_count').textContent = String(count);
+
+  if(qs('#reportStart')) qs('#reportStart').value = todayStr;
+  if(qs('#reportEnd')) qs('#reportEnd').value = todayStr;
+  runReport();
+}
+
+function runReport(){
+  const start = qs('#reportStart')?.value || '';
+  const end = qs('#reportEnd')?.value || '';
+  const inRange = (d) => ((!start || d >= start) && (!end || d <= end));
+
+  const incomeRows = (S.income||[]).filter(x => inRange(x.date||''));
+  const expenseRows = (S.expenses||[]).filter(x => inRange(x.date||''));
+  const receivableRows = (S.receivables||[]).filter(x => inRange(x.date||''));
+
+  const income = incomeRows.reduce((s,x)=>s + Number(x.amount||0), 0);
+  const expense = expenseRows.reduce((s,x)=>s + Number(x.amount||0), 0);
+  const veresiye = incomeRows.filter(x => x.payment === 'VERESIYE').reduce((s,x)=>s + Number(x.amount||0), 0);
+  const tahsilat = receivableRows.filter(x => x.type === 'TAHSILAT').reduce((s,x)=>s + Number(x.amount||0), 0);
+  const count = incomeRows.length + expenseRows.length + receivableRows.filter(x => x.type === 'TAHSILAT').length;
+
+  qs('#r_income').textContent = money(income);
+  qs('#r_expense').textContent = money(expense);
+  qs('#r_net').textContent = money(income - expense);
+  qs('#r_tahsilat').textContent = money(tahsilat);
+  qs('#r_veresiye').textContent = money(veresiye);
+  qs('#r_count').textContent = String(count);
+
+  const tireRows = incomeRows.filter(x => x.category === 'YENI_LASTIK');
+  const tireRevenue = tireRows.reduce((s,x)=>s + Number(x.amount||0), 0);
+  const tireCost = tireRows.reduce((s,x)=>s + (Number(x.buyPrice||0) * Number(x.qty||0)), 0);
+  const tireProfit = tireRevenue - tireCost;
+  if(qs('#r_tire_revenue')) qs('#r_tire_revenue').textContent = money(tireRevenue);
+  if(qs('#r_tire_cost')) qs('#r_tire_cost').textContent = money(tireCost);
+  if(qs('#r_tire_profit')) qs('#r_tire_profit').textContent = money(tireProfit);
+
+  const tireProfitList = qs('#reportTireProfitList');
+  if(tireProfitList){
+    tireProfitList.innerHTML = tireRows.length ? tireRows.map(x => {
+      const qty = Number(x.qty||0);
+      const revenue = Number(x.amount||0);
+      const cost = Number(x.buyPrice||0) * qty;
+      const profit = revenue - cost;
+      return `
+      <div class="item">
+        <div class="title">${esc(x.title||'-')}</div>
+        <div class="money">${money(profit)}</div>
+        <div class="meta">${esc(x.date||'-')}${x.usedDot ? ` • DOT ${esc(x.usedDot)}` : ''}${x.customer ? ` • ${esc(x.customer)}` : ''}${x.plate ? ` • ${esc(x.plate)}` : ''}</div>
+        <div class="small">Satış: ${money(revenue)} • Maliyet: ${money(cost)} • Adet: ${qty}</div>
+      </div>`;
+    }).join('') : '<div class="item">Bu tarih aralığında lastik satışı yok.</div>';
+  }
+
+  const brandProfit = aggregateProfit(tireRows, x => {
+    const t = String(x.title||'').split(' DOT ')[0].trim();
+    return t.split(' ')[0] || '-';
+  });
+  const sizeProfit = aggregateProfit(tireRows, x => {
+    const t = String(x.title||'');
+    const m = t.match(/(\d{3}\/\d{2}\sR\d{2}\s?C?)/i);
+    return m ? m[1].toUpperCase() : '-';
+  });
+  renderProfitGroupList('reportBrandProfitList', brandProfit, 'İşlem');
+  renderProfitGroupList('reportSizeProfitList', sizeProfit, 'İşlem');
+
+  const totalStockQty = (S.stock||[]).reduce((s,card)=>s + Number(card.qty||0), 0);
+  const lowStock = (S.stock||[]).filter(card => Number(card.qty||0) <= 4);
+  const hotelCount = (S.hotels||[]).length;
+
+  qs('#r_stock_qty').textContent = String(totalStockQty);
+  qs('#r_low_stock').textContent = String(lowStock.length);
+  qs('#r_hotel_count').textContent = String(hotelCount);
+
+  const firmBalances = (S.firms||[])
+    .map(f => ({firm:f, balance:getFirmBalance(f)}))
+    .filter(x => Number(x.balance||0) !== 0)
+    .sort((a,b)=>Number(b.balance||0) - Number(a.balance||0));
+
+  qs('#reportFirmList').innerHTML = firmBalances.length ? firmBalances.map(x => `
+    <div class="item">
+      <div class="title">${esc(x.firm)}</div>
+      <div class="money">${money(x.balance||0)}</div>
+    </div>
+  `).join('') : '<div class="item">Borçlu firma yok.</div>';
+
+  qs('#reportStockList').innerHTML = lowStock.length ? lowStock.map(card => `
+    <div class="item">
+      <div class="title">${esc(card.season||'-')} • ${esc(card.brand||'-')} • ${esc(card.size||'-')}</div>
+      <div class="money">${Number(card.qty||0)} adet</div>
+      <div class="small">Azalan stok</div>
+    </div>
+  `).join('') : '<div class="item">Kritik stok yok.</div>';
+
+  const detailRows = [
+    ...incomeRows.map(x => ({
+      kind:'Gelir',
+      date:x.date||'',
+      title:x.title||'-',
+      amount:Number(x.amount||0),
+      meta:[x.payment,x.customer,x.plate,x.firm].filter(Boolean).join(' • ')
+    })),
+    ...expenseRows.map(x => ({
+      kind:'Gider',
+      date:x.date||'',
+      title:x.type || 'Gider',
+      amount:Number(x.amount||0),
+      meta:x.note || ''
+    })),
+    ...receivableRows.filter(x => x.type === 'TAHSILAT').map(x => ({
+      kind:'Tahsilat',
+      date:x.date||'',
+      title:x.firm || 'Firma',
+      amount:Number(x.amount||0),
+      meta:[x.customer,x.plate,x.note].filter(Boolean).join(' • ')
+    }))
+  ].sort((a,b)=>String(b.date).localeCompare(String(a.date),'tr'));
+
+  qs('#reportList').innerHTML = detailRows.length ? detailRows.map(x => `
+    <div class="item">
+      <div class="title">${esc(x.kind)} • ${esc(x.title||'-')}</div>
+      <div class="money">${money(x.amount||0)}</div>
+      <div class="meta">${esc(x.date||'-')}</div>
+      <div class="small">${esc(x.meta||'')}</div>
+    </div>
+  `).join('') : '<div class="item">Bu tarih aralığında kayıt yok.</div>';
+};
+
+qs('#saleManualQty').oninput = calcManualTotal;
+qs('#saleManualUnitPrice').oninput = calcManualTotal;
+
+function calcManualTotal(){
+  const q = Number(qs('#saleManualQty').value||0);
+  const p = Number(qs('#saleManualUnitPrice').value||0);
+  qs('#saleManualTotal').value = (q*p).toFixed(2);
+}
+
+
+// hizmet listesi
+if(!S.services){ S.services = [] }
+
+function refreshServiceList(){
+  const sel = qs('#serviceSelect');
+  sel.innerHTML = '<option value="">Hizmet Seç</option>' + 
+    S.services.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+}
+
+qs('#addServiceBtn').onclick = ()=>{
+  const name = qs('#newServiceName').value.trim();
+  const price = Number(qs('#newServicePrice').value||0);
+  if(!name) return;
+  S.services.push({name, price});
+  saveState();
+  refreshServiceList();
+  qs('#newServiceName').value='';
+  qs('#newServicePrice').value='';
+};
+
+qs('#serviceSelect').onchange = (e)=>{
+  const s = S.services.find(x=>x.name===e.target.value);
+  if(s){
+    qs('#saleManualTitle').value = s.name;
+    qs('#saleManualUnitPrice').value = s.price;
+    calcManualTotal();
+  }
+};
+
+
+  
+function androidHost(method, payload){
+  try{
+    const host = window.Android || window.AndroidApp || window.WebAppInterface || null;
+    if(!host || typeof host[method] !== 'function') return false;
+    host[method](typeof payload === 'string' ? payload : JSON.stringify(payload ?? {}));
+    return true;
+  }catch(err){
+    return false;
+  }
+}
+function notifyAndroidState(reason){
+  androidHost('onStateSaved', { reason, at: new Date().toISOString() });
+}
+function notifyAndroidDownload(filename){
+  androidHost('onBackupReady', { filename, at: new Date().toISOString() });
+}
+function notifyAndroidScreen(screenId){
+  androidHost('onScreenChanged', { screenId, at: new Date().toISOString() });
+}
+
+function bindAndroidLifecycle(){
+    requestPersistentStorage();
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden){
+        stopStockCameraScan(false);
+        safePersistState('VISIBILITY');
+      }
+    });
+    window.addEventListener('pagehide', ()=>{
+      stopStockCameraScan(false);
+      safePersistState('PAGEHIDE');
+    });
+    window.addEventListener('beforeunload', ()=>safePersistState('BEFOREUNLOAD'));
+    window.addEventListener('offline', ()=>safePersistState('OFFLINE'));
+    window.addEventListener('blur', ()=>safePersistState('BLUR'));
+  }
+
+function init(){
+    document.querySelectorAll('button,.btn,.nav button').forEach(el=>el.classList.add('tap-safe'));
+    buildNav();
+    bindEvents();
+    bindAndroidLifecycle();
+    refreshPresetLists();
+    renderAutoBackupInfo();
+    writeAutoBackup(JSON.stringify(S), 'INIT');
+    renderHome();
+    renderReceivables();
+    renderExpenses();
+    renderHotel();
+    renderStock();
+    fillSaleStockCardSelect();
+    renderSalesHistory();
+    runReport();
+    refreshServiceList();
+    openScreen('home');
+  }
+  init();
+})();
+</script>
+</body>
+</html>
